@@ -1,0 +1,14 @@
+# Default genqlient config; for full documentation see:
+# https://github.com/Khan/genqlient/blob/main/docs/genqlient.yaml
+schema: schema.graphql
+operations:
+- genqlient.graphql
+generated: generated.go
+package: client
+bindings:
+  Base64PublicPem: 
+    type: github.com/fasibio/vaulthelper.Base64PublicPem
+  Time: 
+    type: time.Time
+use_struct_references: true
+optional: pointer

@@ -1,0 +1,834 @@
+directive @SQL(order: Int, query: SqlQueryParams, mutation: SqlMutationParams) on OBJECT
+
+directive @SQL_GORM(value: String) on FIELD_DEFINITION
+
+directive @SQL_INDEX on FIELD_DEFINITION
+
+directive @SQL_INPUTTYPE_DIRECTIVE(value: [String!]) on FIELD_DEFINITION | OBJECT
+
+directive @SQL_INPUTTYPE_TAGS(value: [String!]) on FIELD_DEFINITION
+
+directive @SQL_INPUTTYPE_TAGS_INTERNAL(value: [String!]) on INPUT_FIELD_DEFINITION
+
+directive @SQL_PRIMARY on FIELD_DEFINITION
+
+directive @SQL_SKIP_MUTATION on FIELD_DEFINITION
+
+directive @admin on FIELD_DEFINITION
+
+directive @auth(target: RightTarget!, right: [Directions!]!, valueMatchRegex: String!) on FIELD_DEFINITION
+
+"""
+The @defer directive may be specified on a fragment spread to imply
+de-prioritization, that causes the fragment to be omitted in the initial
+response, and delivered as a subsequent response afterward. A query with @defer
+directive will cause the request to potentially return multiple responses, where
+non-deferred data is delivered in the initial response and data deferred
+delivered in a subsequent response. @include and @skip take precedence over @defer.
+"""
+directive @defer(if: Boolean = true, label: String) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+"""
+The @specifiedBy built-in directive is used within the type system definition
+language to provide a scalar specification URL for specifying the behavior of
+custom scalar types.
+"""
+directive @specifiedBy(url: String!) on SCALAR
+
+"""AddIdentity result with filterable data and affected rows"""
+type AddIdentityPayload {
+  identity(filter: IdentityFiltersInput, order: IdentityOrder, first: Int, offset: Int, group: [IdentityGroup!]): IdentityQueryResult!
+  affected: [Identity!]!
+}
+
+"""AddIdentityValue result with filterable data and affected rows"""
+type AddIdentityValuePayload {
+  identityValue(filter: IdentityValueFiltersInput, order: IdentityValueOrder, first: Int, offset: Int, group: [IdentityValueGroup!]): IdentityValueQueryResult!
+  affected: [IdentityValue!]!
+}
+
+"""AddRight result with filterable data and affected rows"""
+type AddRightPayload {
+  right(filter: RightFiltersInput, order: RightOrder, first: Int, offset: Int, group: [RightGroup!]): RightQueryResult!
+  affected: [Right!]!
+}
+
+"""AddValue result with filterable data and affected rows"""
+type AddValuePayload {
+  value(filter: ValueFiltersInput, order: ValueOrder, first: Int, offset: Int, group: [ValueGroup!]): ValueQueryResult!
+  affected: [Value!]!
+}
+
+"""AddVault result with filterable data and affected rows"""
+type AddVaultPayload {
+  vault(filter: VaultFiltersInput, order: VaultOrder, first: Int, offset: Int, group: [VaultGroup!]): VaultQueryResult!
+  affected: [Vault!]!
+}
+
+scalar Base64PublicPem
+
+"""Boolean Filter simple datatypes"""
+input BooleanFilterInput {
+  and: [Boolean]
+  or: [Boolean]
+  not: BooleanFilterInput
+  is: Boolean
+  null: Boolean
+  notNull: Boolean
+}
+
+"""
+DeleteIdentity result with filterable data and count of affected entries
+"""
+type DeleteIdentityPayload {
+  identity(filter: IdentityFiltersInput, order: IdentityOrder, first: Int, offset: Int, group: [IdentityGroup!]): IdentityQueryResult!
+
+  """Count of deleted Identity entities"""
+  count: Int!
+  msg: String
+}
+
+"""
+DeleteIdentityValue result with filterable data and count of affected entries
+"""
+type DeleteIdentityValuePayload {
+  identityValue(filter: IdentityValueFiltersInput, order: IdentityValueOrder, first: Int, offset: Int, group: [IdentityValueGroup!]): IdentityValueQueryResult!
+
+  """Count of deleted IdentityValue entities"""
+  count: Int!
+  msg: String
+}
+
+"""DeleteRight result with filterable data and count of affected entries"""
+type DeleteRightPayload {
+  right(filter: RightFiltersInput, order: RightOrder, first: Int, offset: Int, group: [RightGroup!]): RightQueryResult!
+
+  """Count of deleted Right entities"""
+  count: Int!
+  msg: String
+}
+
+"""DeleteValue result with filterable data and count of affected entries"""
+type DeleteValuePayload {
+  value(filter: ValueFiltersInput, order: ValueOrder, first: Int, offset: Int, group: [ValueGroup!]): ValueQueryResult!
+
+  """Count of deleted Value entities"""
+  count: Int!
+  msg: String
+}
+
+"""DeleteVault result with filterable data and count of affected entries"""
+type DeleteVaultPayload {
+  vault(filter: VaultFiltersInput, order: VaultOrder, first: Int, offset: Int, group: [VaultGroup!]): VaultQueryResult!
+
+  """Count of deleted Vault entities"""
+  count: Int!
+  msg: String
+}
+
+enum Directions {
+  write
+  read
+  delete
+}
+
+type Identity {
+  id: String!
+  name: String
+  publicKey: Base64PublicPem!
+  rights: [Right!]!
+  vaultID: String!
+  vault: Vault!
+  createdAt: Time
+  updatedAt: Time
+  deletedAt: Time
+}
+
+"""
+Filter input selection for Identity
+Can be used f.e.: by queryIdentity
+"""
+input IdentityFiltersInput {
+  id: StringFilterInput
+  name: StringFilterInput
+  rights: RightFiltersInput
+  vaultID: StringFilterInput
+  vault: VaultFiltersInput
+  createdAt: TimeFilterInput
+  updatedAt: TimeFilterInput
+  deletedAt: TimeFilterInput
+  and: [IdentityFiltersInput]
+  or: [IdentityFiltersInput]
+  not: IdentityFiltersInput
+}
+
+"""
+Groupable data for  Identity
+Can be used f.e.: by queryIdentity
+"""
+enum IdentityGroup {
+  id
+  name
+  vaultID
+  createdAt
+  updatedAt
+  deletedAt
+}
+
+"""Identity Input value to add new Identity"""
+input IdentityInput {
+  name: String
+  publicKey: Base64PublicPem!
+  rights: [RightInput!]!
+}
+
+"""Order Identity by asc or desc """
+input IdentityOrder {
+  asc: IdentityOrderable
+  desc: IdentityOrderable
+}
+
+"""
+for Identity a enum of all orderable entities
+can be used f.e.: queryIdentity
+"""
+enum IdentityOrderable {
+  id
+  name
+  vaultID
+}
+
+"""
+Identity Patch value all values are optional to update Identity entities
+"""
+input IdentityPatch {
+  name: String
+  publicKey: Base64PublicPem
+  rights: [RightPatch!]
+}
+
+"""Identity result"""
+type IdentityQueryResult {
+  data: [Identity!]!
+  count: Int!
+  totalCount: Int!
+}
+
+type IdentityValue {
+  id: ID!
+  valueID: String!
+  value: Value!
+  identityID: String!
+  identity: Identity!
+  passframe: String!
+  createdAt: Time
+  updatedAt: Time
+  deletedAt: Time
+}
+
+"""
+Filter input selection for IdentityValue
+Can be used f.e.: by queryIdentityValue
+"""
+input IdentityValueFiltersInput {
+  id: IDFilterInput
+  valueID: StringFilterInput
+  value: ValueFiltersInput
+  identityID: StringFilterInput
+  identity: IdentityFiltersInput
+  passframe: StringFilterInput
+  createdAt: TimeFilterInput
+  updatedAt: TimeFilterInput
+  deletedAt: TimeFilterInput
+  and: [IdentityValueFiltersInput]
+  or: [IdentityValueFiltersInput]
+  not: IdentityValueFiltersInput
+}
+
+"""
+Groupable data for  IdentityValue
+Can be used f.e.: by queryIdentityValue
+"""
+enum IdentityValueGroup {
+  id
+  valueID
+  identityID
+  passframe
+  createdAt
+  updatedAt
+  deletedAt
+}
+
+"""IdentityValue Input value to add new IdentityValue"""
+input IdentityValueInput {
+  valueID: String!
+  identityID: String!
+  passframe: String!
+}
+
+"""Order IdentityValue by asc or desc """
+input IdentityValueOrder {
+  asc: IdentityValueOrderable
+  desc: IdentityValueOrderable
+}
+
+"""
+for IdentityValue a enum of all orderable entities
+can be used f.e.: queryIdentityValue
+"""
+enum IdentityValueOrderable {
+  id
+  valueID
+  identityID
+  passframe
+}
+
+"""
+IdentityValue Patch value all values are optional to update IdentityValue entities
+"""
+input IdentityValuePatch {
+  valueID: String
+  identityID: String
+  passframe: String
+}
+
+"""IdentityValue result"""
+type IdentityValueQueryResult {
+  data: [IdentityValue!]!
+  count: Int!
+  totalCount: Int!
+}
+
+"""ID Filter simple datatypes"""
+input IDFilterInput {
+  and: [ID]
+  or: [ID]
+  not: IDFilterInput
+  eq: ID
+  ne: ID
+  null: Boolean
+  notNull: Boolean
+  in: [ID]
+  notin: [ID]
+}
+
+"""Filter between start and end (start > value < end)"""
+input IntFilterBetween {
+  start: Int!
+  end: Int!
+}
+
+"""Int Filter simple datatypes"""
+input IntFilterInput {
+  and: [Int]
+  or: [Int]
+  not: IntFilterInput
+  eq: Int
+  ne: Int
+  gt: Int
+  gte: Int
+  lt: Int
+  lte: Int
+  null: Boolean
+  notNull: Boolean
+  in: [Int]
+  notIn: [Int]
+  between: IntFilterBetween
+}
+
+type Mutation {
+  """Create a new Vault with first operator and return vault id"""
+  createVault(name: String!, operatorPublicKey: Base64PublicPem!, token: String!): String!
+
+  """Add new Identity"""
+  addIdentity(input: [IdentityInput!]!): AddIdentityPayload
+
+  """update Identity filtered by selection and update all matched values"""
+  updateIdentity(input: UpdateIdentityInput!): UpdateIdentityPayload
+
+  """delete Identity filtered by selection and delete all matched values"""
+  deleteIdentity(filter: IdentityFiltersInput!): DeleteIdentityPayload
+
+  """Add new IdentityValue"""
+  addIdentityValue(input: [IdentityValueInput!]!): AddIdentityValuePayload
+
+  """
+  update IdentityValue filtered by selection and update all matched values
+  """
+  updateIdentityValue(input: UpdateIdentityValueInput!): UpdateIdentityValuePayload
+
+  """
+  delete IdentityValue filtered by selection and delete all matched values
+  """
+  deleteIdentityValue(filter: IdentityValueFiltersInput!): DeleteIdentityValuePayload
+
+  """Add new Right"""
+  addRight(input: [RightInput!]!): AddRightPayload
+
+  """update Right filtered by selection and update all matched values"""
+  updateRight(input: UpdateRightInput!): UpdateRightPayload
+
+  """delete Right filtered by selection and delete all matched values"""
+  deleteRight(filter: RightFiltersInput!): DeleteRightPayload
+
+  """Add new Value"""
+  addValue(input: [ValueInput!]!): AddValuePayload
+
+  """update Value filtered by selection and update all matched values"""
+  updateValue(input: UpdateValueInput!): UpdateValuePayload
+
+  """delete Value filtered by selection and delete all matched values"""
+  deleteValue(filter: ValueFiltersInput!): DeleteValuePayload
+
+  """Add new Vault"""
+  addVault(input: [VaultInput!]!): AddVaultPayload
+
+  """update Vault filtered by selection and update all matched values"""
+  updateVault(input: UpdateVaultInput!): UpdateVaultPayload
+
+  """delete Vault filtered by selection and delete all matched values"""
+  deleteVault(filter: VaultFiltersInput!): DeleteVaultPayload
+}
+
+type Query {
+  identitiesWithValueAccess(forValue: String!): [Identity!]!
+  allRelatedValues(identityId: String!): [Value!]!
+
+  """return one Identity selected by PrimaryKey(s)"""
+  getIdentity(id: String!): Identity
+
+  """
+  return a list of  Identity filterable, pageination, orderbale, groupable ...
+  """
+  queryIdentity(filter: IdentityFiltersInput, order: IdentityOrder, first: Int, offset: Int, group: [IdentityGroup!]): IdentityQueryResult
+
+  """return one IdentityValue selected by PrimaryKey(s)"""
+  getIdentityValue(id: ID!): IdentityValue
+
+  """
+  return a list of  IdentityValue filterable, pageination, orderbale, groupable ...
+  """
+  queryIdentityValue(filter: IdentityValueFiltersInput, order: IdentityValueOrder, first: Int, offset: Int, group: [IdentityValueGroup!]): IdentityValueQueryResult
+
+  """return one Right selected by PrimaryKey(s)"""
+  getRight(id: ID!): Right
+
+  """
+  return a list of  Right filterable, pageination, orderbale, groupable ...
+  """
+  queryRight(filter: RightFiltersInput, order: RightOrder, first: Int, offset: Int, group: [RightGroup!]): RightQueryResult
+
+  """return one Value selected by PrimaryKey(s)"""
+  getValue(id: String!): Value
+
+  """
+  return a list of  Value filterable, pageination, orderbale, groupable ...
+  """
+  queryValue(filter: ValueFiltersInput, order: ValueOrder, first: Int, offset: Int, group: [ValueGroup!]): ValueQueryResult
+
+  """return one Vault selected by PrimaryKey(s)"""
+  getVault(id: String!): Vault
+
+  """
+  return a list of  Vault filterable, pageination, orderbale, groupable ...
+  """
+  queryVault(filter: VaultFiltersInput, order: VaultOrder, first: Int, offset: Int, group: [VaultGroup!]): VaultQueryResult
+}
+
+type Right {
+  id: ID!
+  target: RightTarget!
+  right: Directions!
+  rightValuePattern: String!
+  identityID: String!
+  identity: Identity
+  createdAt: Time
+  updatedAt: Time
+  deletedAt: Time
+}
+
+"""
+Filter input selection for Right
+Can be used f.e.: by queryRight
+"""
+input RightFiltersInput {
+  id: IDFilterInput
+  target: StringFilterInput
+  right: StringFilterInput
+  rightValuePattern: StringFilterInput
+  identityID: StringFilterInput
+  identity: IdentityFiltersInput
+  createdAt: TimeFilterInput
+  updatedAt: TimeFilterInput
+  deletedAt: TimeFilterInput
+  and: [RightFiltersInput]
+  or: [RightFiltersInput]
+  not: RightFiltersInput
+}
+
+"""
+Groupable data for  Right
+Can be used f.e.: by queryRight
+"""
+enum RightGroup {
+  id
+  rightValuePattern
+  identityID
+  createdAt
+  updatedAt
+  deletedAt
+}
+
+"""Right Input value to add new Right"""
+input RightInput {
+  target: RightTarget!
+  right: Directions!
+  rightValuePattern: String!
+  identityID: String!
+}
+
+"""Order Right by asc or desc """
+input RightOrder {
+  asc: RightOrderable
+  desc: RightOrderable
+}
+
+"""
+for Right a enum of all orderable entities
+can be used f.e.: queryRight
+"""
+enum RightOrderable {
+  id
+  rightValuePattern
+  identityID
+}
+
+"""Right Patch value all values are optional to update Right entities"""
+input RightPatch {
+  target: RightTarget
+  right: Directions
+  rightValuePattern: String
+  identityID: String
+}
+
+"""Right result"""
+type RightQueryResult {
+  data: [Right!]!
+  count: Int!
+  totalCount: Int!
+}
+
+enum RightTarget {
+  values
+  system
+  identities
+}
+
+input SqlCreateExtension {
+  value: Boolean!
+  directiveExt: [String!]
+}
+
+input SqlMutationParams {
+  add: SqlCreateExtension
+  update: SqlCreateExtension
+  delete: SqlCreateExtension
+  directiveExt: [String!]
+}
+
+input SqlQueryParams {
+  get: SqlCreateExtension
+  query: SqlCreateExtension
+  directiveExt: [String!]
+}
+
+"""String Filter simple datatypes"""
+input StringFilterInput {
+  and: [String]
+  or: [String]
+  not: StringFilterInput
+  eq: String
+  eqi: String
+  ne: String
+  startsWith: String
+  endsWith: String
+  contains: String
+  notContains: String
+  containsi: String
+  notContainsi: String
+  null: Boolean
+  notNull: Boolean
+  in: [String]
+  notIn: [String]
+}
+
+scalar Time
+
+"""Filter between start and end (start > value < end)"""
+input TimeFilterBetween {
+  start: Time!
+  end: Time!
+}
+
+"""Time Filter simple datatypes"""
+input TimeFilterInput {
+  and: [Time]
+  or: [Time]
+  not: TimeFilterInput
+  eq: Time
+  ne: Time
+  gt: Time
+  gte: Time
+  lt: Time
+  lte: Time
+  null: Boolean
+  notNull: Boolean
+  in: [Time]
+  notIn: [Time]
+  between: TimeFilterBetween
+}
+
+"""
+Update rules for Identity multiupdates simple possible by global filtervalue
+"""
+input UpdateIdentityInput {
+  filter: IdentityFiltersInput!
+  set: IdentityPatch!
+}
+
+"""UpdateIdentity result with filterable data and affected rows"""
+type UpdateIdentityPayload {
+  identity(filter: IdentityFiltersInput, order: IdentityOrder, first: Int, offset: Int, group: [IdentityGroup!]): IdentityQueryResult!
+
+  """Count of affected updates"""
+  count: Int!
+  affected: [Identity!]!
+}
+
+"""
+Update rules for IdentityValue multiupdates simple possible by global filtervalue
+"""
+input UpdateIdentityValueInput {
+  filter: IdentityValueFiltersInput!
+  set: IdentityValuePatch!
+}
+
+"""UpdateIdentityValue result with filterable data and affected rows"""
+type UpdateIdentityValuePayload {
+  identityValue(filter: IdentityValueFiltersInput, order: IdentityValueOrder, first: Int, offset: Int, group: [IdentityValueGroup!]): IdentityValueQueryResult!
+
+  """Count of affected updates"""
+  count: Int!
+  affected: [IdentityValue!]!
+}
+
+"""
+Update rules for Right multiupdates simple possible by global filtervalue
+"""
+input UpdateRightInput {
+  filter: RightFiltersInput!
+  set: RightPatch!
+}
+
+"""UpdateRight result with filterable data and affected rows"""
+type UpdateRightPayload {
+  right(filter: RightFiltersInput, order: RightOrder, first: Int, offset: Int, group: [RightGroup!]): RightQueryResult!
+
+  """Count of affected updates"""
+  count: Int!
+  affected: [Right!]!
+}
+
+"""
+Update rules for Value multiupdates simple possible by global filtervalue
+"""
+input UpdateValueInput {
+  filter: ValueFiltersInput!
+  set: ValuePatch!
+}
+
+"""UpdateValue result with filterable data and affected rows"""
+type UpdateValuePayload {
+  value(filter: ValueFiltersInput, order: ValueOrder, first: Int, offset: Int, group: [ValueGroup!]): ValueQueryResult!
+
+  """Count of affected updates"""
+  count: Int!
+  affected: [Value!]!
+}
+
+"""
+Update rules for Vault multiupdates simple possible by global filtervalue
+"""
+input UpdateVaultInput {
+  filter: VaultFiltersInput!
+  set: VaultPatch!
+}
+
+"""UpdateVault result with filterable data and affected rows"""
+type UpdateVaultPayload {
+  vault(filter: VaultFiltersInput, order: VaultOrder, first: Int, offset: Int, group: [VaultGroup!]): VaultQueryResult!
+
+  """Count of affected updates"""
+  count: Int!
+  affected: [Vault!]!
+}
+
+type Value {
+  id: String!
+  name: String!
+  vaultID: String!
+  vault: Vault!
+  value: [IdentityValue!]!
+  type: ValueType!
+  createdAt: Time
+  updatedAt: Time
+  deletedAt: Time
+}
+
+"""
+Filter input selection for Value
+Can be used f.e.: by queryValue
+"""
+input ValueFiltersInput {
+  id: StringFilterInput
+  name: StringFilterInput
+  vaultID: StringFilterInput
+  vault: VaultFiltersInput
+  value: IdentityValueFiltersInput
+  type: StringFilterInput
+  createdAt: TimeFilterInput
+  updatedAt: TimeFilterInput
+  deletedAt: TimeFilterInput
+  and: [ValueFiltersInput]
+  or: [ValueFiltersInput]
+  not: ValueFiltersInput
+}
+
+"""
+Groupable data for  Value
+Can be used f.e.: by queryValue
+"""
+enum ValueGroup {
+  id
+  name
+  vaultID
+  createdAt
+  updatedAt
+  deletedAt
+}
+
+"""Value Input value to add new Value"""
+input ValueInput {
+  name: String!
+  type: ValueType!
+}
+
+"""Order Value by asc or desc """
+input ValueOrder {
+  asc: ValueOrderable
+  desc: ValueOrderable
+}
+
+"""
+for Value a enum of all orderable entities
+can be used f.e.: queryValue
+"""
+enum ValueOrderable {
+  id
+  name
+  vaultID
+}
+
+"""Value Patch value all values are optional to update Value entities"""
+input ValuePatch {
+  name: String
+  type: ValueType
+}
+
+"""Value result"""
+type ValueQueryResult {
+  data: [Value!]!
+  count: Int!
+  totalCount: Int!
+}
+
+enum ValueType {
+  String
+  JSON
+}
+
+type Vault {
+  id: String!
+  name: String!
+  identities: [Identity!]
+  values: [Value!]
+  createdAt: Time
+  updatedAt: Time
+  deletedAt: Time
+}
+
+"""
+Filter input selection for Vault
+Can be used f.e.: by queryVault
+"""
+input VaultFiltersInput {
+  id: StringFilterInput
+  name: StringFilterInput
+  identities: IdentityFiltersInput
+  values: ValueFiltersInput
+  createdAt: TimeFilterInput
+  updatedAt: TimeFilterInput
+  deletedAt: TimeFilterInput
+  and: [VaultFiltersInput]
+  or: [VaultFiltersInput]
+  not: VaultFiltersInput
+}
+
+"""
+Groupable data for  Vault
+Can be used f.e.: by queryVault
+"""
+enum VaultGroup {
+  id
+  name
+  createdAt
+  updatedAt
+  deletedAt
+}
+
+"""Vault Input value to add new Vault"""
+input VaultInput {
+  name: String!
+  identities: [IdentityInput!]
+  values: [ValueInput!]
+}
+
+"""Order Vault by asc or desc """
+input VaultOrder {
+  asc: VaultOrderable
+  desc: VaultOrderable
+}
+
+"""
+for Vault a enum of all orderable entities
+can be used f.e.: queryVault
+"""
+enum VaultOrderable {
+  id
+  name
+}
+
+"""Vault Patch value all values are optional to update Vault entities"""
+input VaultPatch {
+  name: String
+  identities: [IdentityPatch!]
+  values: [ValuePatch!]
+}
+
+"""Vault result"""
+type VaultQueryResult {
+  data: [Vault!]!
+  count: Int!
+  totalCount: Int!
+}
+

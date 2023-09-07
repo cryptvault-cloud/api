@@ -1,0 +1,27 @@
+
+vars: 
+  helper: "YES"
+  URL: http://localhost:8080/query
+
+---
+
+api:_changedir:
+  script: 
+    {{$isInFolder := hasSuffix "/vault/vaultapi" .Env.PWD}}
+    {{if not $isInFolder }} 
+    - cd vaultapi
+    {{end}}
+
+api:tidy: 
+  doc: execute go mod tidy for api
+  stage: tidy
+  script:
+    {{include "api:_changedir"}}
+    - go mod tidy
+
+api:gen:local: 
+  doc: update graphqlclient again local server at port 8080
+  script: 
+    {{include "api:_changedir"}}
+    - get-graphql-schema {{.Vars.URL}} > schema.graphql
+    - go run github.com/Khan/genqlient

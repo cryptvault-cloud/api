@@ -1,0 +1,191 @@
+mutation createNewVault($name: String!, $operatorPublicKey: Base64PublicPem!, $token: String!) {
+  createVault(
+    name: $name
+    operatorPublicKey: $operatorPublicKey
+    token: $token
+  )
+}
+
+mutation addIdentity($name:String!, $publicKey: Base64PublicPem!){
+  addIdentity(input: {
+    name:$name
+    publicKey: $publicKey
+    rights: []
+  }){
+    affected{
+      id
+    }
+  }
+}
+
+mutation updateIdentity($id: String!, $name: String!){
+  updateIdentity(input: {set:{name:$name}, filter:{id:{eq:$id}}}){
+    affected{
+      id
+      publicKey
+    }
+  }
+}
+
+mutation addRight($input:[RightInput!]!){
+  addRight(input: $input){
+    affected{
+      id
+    }
+  }
+}
+
+mutation deleteIdentity($identityid: String!) {
+  deleteIdentity(filter: {id: {eq: $identityid}}) {
+    count
+  }
+}
+
+mutation deleteRight($rightId: ID!, $identityId:String!){
+  deleteRight(filter:{id:{eq: $rightId} identityID:{eq:$identityId}}){
+    count
+  }
+}
+
+mutation deleteAllRightsFromIdentity($identityId:String!){
+  deleteRight(filter:{ identityID:{eq:$identityId}}){
+    count
+  }
+}
+
+mutation deleteVault($id: String!){
+  deleteVault(filter: {id:{eq:$id}}){
+    count
+  }
+}
+
+query getIdentity($id: String!) {
+  getIdentity(id: $id) {
+    id
+    name
+    publicKey
+    vaultID
+    createdAt
+    updatedAt
+    rights {
+      id
+      right
+      target
+      rightValuePattern
+    }
+  }
+}
+
+query getRelatedIdenties($value: String!) {
+  identitiesWithValueAccess(forValue: $value) {
+    id
+    name
+    publicKey
+  }
+}
+
+mutation addValue($name: String!, $valueType: ValueType!) {
+  addValue(input: {name: $name, type: $valueType}) {
+    affected {
+      id
+    }
+  }
+}
+
+mutation addIdentityValue($input:[IdentityValueInput!]! ) {
+  addIdentityValue(input:$input) {
+    affected {
+      id
+    }
+  }
+}
+
+query getValue($id:String!){
+  getValue(id: $id){
+    name,
+    type, 
+    id,
+    createdAt
+    updatedAt
+    value{
+      id
+      identityID
+      identity{
+        publicKey
+      }
+      passframe
+    }
+  } 
+}
+
+mutation updateVault($name:String!){
+  updateVault(input: {filter: {},set:{name:$name }}){
+    affected{
+      id
+      name
+      updatedAt
+    }
+  }
+}
+
+query getVault($id:String!) {
+  getVault(id: $id) {
+    id
+    name
+    updatedAt
+  }
+}
+
+query getValueByName($name: String!) {
+  queryValue(filter: {name:{eq:$name}}) {
+    data {
+      name
+      type
+      id
+      createdAt
+      updatedAt
+      value {
+        id
+        identityID
+        identity {
+          publicKey
+        }
+        passframe
+      }
+    }
+  }
+}
+
+mutation deleteValue($id:String!){
+  deleteValue(filter:{id:{eq:$id}}){
+    count
+  }
+}
+
+mutation updateValue($id:String!, $key:String!, $valueType:ValueType!){
+  updateValue(input:{filter:{id:{eq:$id}} set:{type:$valueType, name:$key}}){
+    affected{
+      id
+    }
+  }
+}
+
+mutation updateIdentityValue($id: ID!, $input:IdentityValuePatch! ){
+  updateIdentityValue(input: {filter: {id:{eq:$id}},set: $input}){
+    affected{
+      id
+    }
+  }
+}
+
+mutation deleteIdentityValue($id: ID!){
+  deleteIdentityValue(filter:{id: {eq:$id}}){
+    count
+  }
+}
+
+query allRelatedValues($identity: String!){
+  allRelatedValues(identityId: $identity){
+    id
+  }
+}
