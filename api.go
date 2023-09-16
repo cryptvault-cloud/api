@@ -6,6 +6,7 @@ import (
 	"errors"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/Khan/genqlient/graphql"
 	"github.com/fasibio/vaulthelper"
@@ -288,6 +289,62 @@ func (a *ProtectedApi) DeleteValue(id string) error {
 func (a *ProtectedApi) GetValueById(id string) (*getValueGetValue, error) {
 	resp, err := getValue(context.Background(), a.client, id)
 	return resp.GetValue, err
+}
+
+func (a *ProtectedApi) GetIdentityValueById(id string) (*IdentityValue, error) {
+	resp, err := getValue(context.Background(), a.client, id)
+	if err != nil {
+		return nil, err
+	}
+	values := make([]EncryptenValue, 0)
+	for _, v := range resp.GetValue.Value {
+		values = append(values, v)
+	}
+	password, err := a.GetDecryptedPassframe(values)
+	if err != nil {
+		return nil, err
+	}
+	return &IdentityValue{
+		Name:      resp.GetValue.Name,
+		Type:      resp.GetValue.Type,
+		Id:        resp.GetValue.Id,
+		CreatedAt: resp.GetValue.CreatedAt,
+		UpdatedAt: resp.GetValue.UpdatedAt,
+		Value:     password,
+	}, nil
+}
+
+type IdentityValue struct {
+	Name      string     `json:"name"`
+	Type      ValueType  `json:"type"`
+	Id        string     `json:"id"`
+	CreatedAt *time.Time `json:"createdAt"`
+	UpdatedAt *time.Time `json:"updatedAt"`
+	Value     string     `json:"value"`
+}
+
+func (a *ProtectedApi) GetIdentityValueByName(name string) (*IdentityValue, error) {
+	valueResp, err := a.GetValueByName(name)
+	if err != nil {
+		return nil, err
+	}
+
+	values := make([]EncryptenValue, 0)
+	for _, v := range valueResp.GetValue() {
+		values = append(values, v)
+	}
+	password, err := a.GetDecryptedPassframe(values)
+	if err != nil {
+		return nil, err
+	}
+	return &IdentityValue{
+		Name:      valueResp.Name,
+		Type:      valueResp.Type,
+		Id:        valueResp.Id,
+		CreatedAt: valueResp.CreatedAt,
+		UpdatedAt: valueResp.UpdatedAt,
+		Value:     password,
+	}, nil
 }
 
 func (a *ProtectedApi) GetValueByName(name string) (*getValueByNameQueryValueValueQueryResultDataValue, error) {
