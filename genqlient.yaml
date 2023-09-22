@@ -7,7 +7,7 @@ generated: generated.go
 package: client
 bindings:
   Base64PublicPem: 
-    type: github.com/fasibio/vaulthelper.Base64PublicPem
+    type: github.com/cryptvault-cloud/helper.Base64PublicPem
   Time: 
     type: time.Time
 use_struct_references: true

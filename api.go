@@ -9,8 +9,7 @@ import (
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
-	"github.com/fasibio/vaulthelper"
-	"github.com/fasibio/vaulthelper/helper"
+	"github.com/cryptvault-cloud/helper"
 )
 
 type Api struct {
@@ -32,7 +31,7 @@ func (a *Api) NewVault(name, token string) (private *ecdsa.PrivateKey, public *e
 	if err != nil {
 		return
 	}
-	pubbase64, err := vaulthelper.NewBase64PublicPem(public)
+	pubbase64, err := helper.NewBase64PublicPem(public)
 	if err != nil {
 		return
 	}
@@ -108,7 +107,7 @@ func (a *ProtectedApi) DeleteVault(id string) error {
 
 func (a *ProtectedApi) AddIdentity(name string, publicKey *ecdsa.PublicKey, rights []*RightInput) (*AddIdentityResponse, error) {
 
-	key, err := vaulthelper.NewBase64PublicPem(publicKey)
+	key, err := helper.NewBase64PublicPem(publicKey)
 	if err != nil {
 		return nil, err
 	}
@@ -227,7 +226,7 @@ func (a *ProtectedApi) AddValue(key, value string, valueType ValueType) (string,
 		return "", err
 	}
 
-	pemPubkey, err := vaulthelper.NewBase64PublicPem(&a.authKey.PublicKey)
+	pemPubkey, err := helper.NewBase64PublicPem(&a.authKey.PublicKey)
 	if err != nil {
 		return "", err
 	}
@@ -367,7 +366,7 @@ func (a *ProtectedApi) UpdateValue(id, key, value string, valueType ValueType) (
 		return "", err
 	}
 
-	pemPubkey, err := vaulthelper.NewBase64PublicPem(&a.authKey.PublicKey)
+	pemPubkey, err := helper.NewBase64PublicPem(&a.authKey.PublicKey)
 	if err != nil {
 		return "", err
 	}
@@ -430,7 +429,7 @@ func (a *ProtectedApi) SyncValue(id string) error {
 	if err != nil {
 		return err
 	}
-	ownerPubKey, err := vaulthelper.NewBase64PublicPem(&a.authKey.PublicKey)
+	ownerPubKey, err := helper.NewBase64PublicPem(&a.authKey.PublicKey)
 	if err != nil {
 		return err
 	}
@@ -514,7 +513,7 @@ type EncryptenValue interface {
 
 func (a *ProtectedApi) GetDecryptedPassframe(value []EncryptenValue) (string, error) {
 
-	pemKey, err := vaulthelper.NewBase64PublicPem(&a.authKey.PublicKey)
+	pemKey, err := helper.NewBase64PublicPem(&a.authKey.PublicKey)
 	if err != nil {
 		return "", err
 	}

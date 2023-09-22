@@ -1,10 +1,10 @@
-module github.com/fasibio/vaultapi
+module github.com/cryptvault-cloud/api
 
 go 1.20
 
 require github.com/Khan/genqlient v0.6.0
 
-require github.com/fasibio/vaulthelper v0.0.6
+require github.com/cryptvault-cloud/helper v0.0.9
 
 require (
 	github.com/vektah/gqlparser/v2 v2.5.8 // indirect
@@ -12,4 +12,4 @@ require (
 	golang.org/x/sys v0.12.0 // indirect
 )
 
-// replace github.com/fasibio/vaulthelper v0.0.0 => ../vaulthelper
+// replace github.com/cryptvault-cloud v0.0.0 => ../vaulthelper
