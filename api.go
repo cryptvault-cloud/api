@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/ecdsa"
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -111,7 +112,17 @@ func (a *ProtectedApi) AddIdentity(name string, publicKey *ecdsa.PublicKey, righ
 	if err != nil {
 		return nil, err
 	}
-	resp, err := addIdentity(context.Background(), a.client, name, key)
+
+	newIdentityId, err := key.GetIdentityId(a.vaultId)
+	if err != nil {
+		return nil, err
+	}
+
+	creatorSign, err := helper.SignCreatorJWT(a.authKey, newIdentityId, a.vaultId)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := addIdentity(context.Background(), a.client, name, key, creatorSign)
 	if err != nil {
 		return nil, err
 	}
@@ -420,6 +431,64 @@ func (a *ProtectedApi) UpdateValue(id, key, value string, valueType ValueType) (
 	return valueId, err
 }
 
+// SyncValues sync all values by check identity and get all related identies wich also has access to this value
+func (a *ProtectedApi) SyncValues(identityId string) error {
+	values, err := a.GetAllRelatedValues(identityId)
+	if err != nil {
+		return err
+	}
+	for _, v := range values {
+		err := a.SyncValue(v)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+type checkIdentitiesHaveRelatedSignatureChainAble interface {
+	GetCreatorVerification() string
+	GetId() string
+	GetPublicKey() helper.Base64PublicPem
+}
+
+func (a *ProtectedApi) checkIdentityHaveRelatedSignatureChain(identity *getRelatedIdentiesIdentitiesWithValueAccessIdentity, other []*getRelatedIdentiesIdentitiesWithValueAccessIdentity) error {
+
+	if identity.IsOperator {
+		return nil
+	}
+
+	creator, _, err := helper.DecodeCreatorJWT(identity.GetCreatorVerification())
+	if err != nil {
+		return err
+	}
+
+	creatorIdentity := helper.Filter[*getRelatedIdentiesIdentitiesWithValueAccessIdentity](other, func(griiwvai *getRelatedIdentiesIdentitiesWithValueAccessIdentity) bool {
+		return griiwvai.Id == creator.CreatorTokenId
+	})
+	if len(creatorIdentity) != 1 {
+		return fmt.Errorf("Something strange creator identity was not found, or more than one was found. this could not be possible, cause of permission chain")
+	}
+	creatorPubKey, err := creatorIdentity[0].GetPublicKey().GetPublicKey()
+	if err != nil {
+		return err
+	}
+	_, err = helper.VerifyCreatorJWT(creatorPubKey, identity.CreatorVerification)
+	if err != nil {
+		return err
+	}
+	return a.checkIdentityHaveRelatedSignatureChain(creatorIdentity[0], other)
+}
+
+func (a *ProtectedApi) checkIdentitiesHaveRelatedSignatureChain(identies []*getRelatedIdentiesIdentitiesWithValueAccessIdentity) error {
+	for _, identity := range identies {
+		if err := a.checkIdentityHaveRelatedSignatureChain(identity, identies); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (a *ProtectedApi) SyncValue(id string) error {
 	value, err := a.GetValueById(id)
 	if err != nil {
@@ -448,6 +517,9 @@ func (a *ProtectedApi) SyncValue(id string) error {
 	}
 	if !hasOwnId {
 		return errors.New("sender Identity has not the rights to update value")
+	}
+	if err := a.checkIdentitiesHaveRelatedSignatureChain(resp.GetIdentitiesWithValueAccess()); err != nil {
+		return err
 	}
 
 	values := make([]EncryptenValue, 0)

@@ -1,15 +1,15 @@
 
 vars: 
   helper: "YES"
-  URL: http://localhost:8080/query
+  URL: http://localhost:4123/query
 
 ---
 
 api:_changedir:
   script: 
-    {{$isInFolder := hasSuffix "/vault/vaultapi" .Env.PWD}}
+    {{$isInFolder := hasSuffix "/vault/api" .Env.PWD}}
     {{if not $isInFolder }} 
-    - cd vaultapi
+    - cd api
     {{end}}
 
 api:tidy: 

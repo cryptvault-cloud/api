@@ -6,10 +6,11 @@ mutation createNewVault($name: String!, $operatorPublicKey: Base64PublicPem!, $t
   )
 }
 
-mutation addIdentity($name:String!, $publicKey: Base64PublicPem!){
+mutation addIdentity($name:String!, $publicKey: Base64PublicPem!, $creatorVerification: String!){
   addIdentity(input: {
     name:$name
     publicKey: $publicKey
+    creatorVerification: $creatorVerification
     rights: []
   }){
     affected{
@@ -81,6 +82,8 @@ query getRelatedIdenties($value: String!) {
     id
     name
     publicKey
+    creatorVerification
+    isOperator
   }
 }
 
