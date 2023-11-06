@@ -6,8 +6,6 @@ import (
 )
 
 func TestGetRightDescriptionByString(t *testing.T) {
-	type args struct {
-	}
 	tests := []struct {
 		name              string
 		inputValuePattern string
