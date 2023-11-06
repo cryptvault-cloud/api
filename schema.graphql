@@ -18,6 +18,10 @@ directive @admin on FIELD_DEFINITION
 
 directive @auth(target: RightTarget!, right: [Directions!]!, valueMatchRegex: String!) on FIELD_DEFINITION
 
+directive @authenticated on FIELD_DEFINITION | OBJECT | INTERFACE | SCALAR | ENUM
+
+directive @composeDirective(name: String!) on SCHEMA
+
 """
 The @defer directive may be specified on a fragment spread to imply
 de-prioritization, that causes the fragment to be omitted in the initial
@@ -28,12 +32,46 @@ delivered in a subsequent response. @include and @skip take precedence over @def
 """
 directive @defer(if: Boolean = true, label: String) on FRAGMENT_SPREAD | INLINE_FRAGMENT
 
+directive @extends on OBJECT | INTERFACE
+
+directive @external on OBJECT | FIELD_DEFINITION
+
+directive @inaccessible on ARGUMENT_DEFINITION | ENUM | ENUM_VALUE | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT | INTERFACE | OBJECT | SCALAR | UNION
+
+directive @interfaceObject on OBJECT
+
+directive @key(fields: FieldSet!, resolvable: Boolean = true) on OBJECT | INTERFACE
+
+directive @link(import: [String!], url: String!) on SCHEMA
+
+directive @override(from: String!) on FIELD_DEFINITION
+
+directive @provides(fields: FieldSet!) on FIELD_DEFINITION
+
+directive @requires(fields: FieldSet!) on FIELD_DEFINITION
+
+directive @requiresScopes(scopes: [[federation__Scope!]!]!) on FIELD_DEFINITION | OBJECT | INTERFACE | SCALAR | ENUM
+
+directive @shareable on FIELD_DEFINITION | OBJECT
+
 """
 The @specifiedBy built-in directive is used within the type system definition
 language to provide a scalar specification URL for specifying the behavior of
 custom scalar types.
 """
 directive @specifiedBy(url: String!) on SCALAR
+
+directive @tag(name: String!) on ARGUMENT_DEFINITION | ENUM | ENUM_VALUE | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT | INTERFACE | OBJECT | SCALAR | UNION
+
+directive @userAuth on FIELD_DEFINITION
+
+scalar _Any
+
+union _Entity = TokenData | UserData
+
+type _Service {
+  sdl: String
+}
 
 """AddIdentity result with filterable data and affected rows"""
 type AddIdentityPayload {
@@ -51,6 +89,12 @@ type AddIdentityValuePayload {
 type AddRightPayload {
   right(filter: RightFiltersInput, order: RightOrder, first: Int, offset: Int, group: [RightGroup!]): RightQueryResult!
   affected: [Right!]!
+}
+
+"""AddTokenInfo result with filterable data and affected rows"""
+type AddTokenInfoPayload {
+  tokenInfo(filter: TokenInfoFiltersInput, order: TokenInfoOrder, first: Int, offset: Int, group: [TokenInfoGroup!]): TokenInfoQueryResult!
+  affected: [TokenInfo!]!
 }
 
 """AddValue result with filterable data and affected rows"""
@@ -75,6 +119,23 @@ input BooleanFilterInput {
   is: Boolean
   null: Boolean
   notNull: Boolean
+}
+
+type CostCalculation {
+  usedCostEncryption: Int!
+  calculationStart: Time!
+  calculationEnd: Time!
+  cost: Float!
+  currency: Currency!
+}
+
+enum CostValuesType {
+  ADD
+  DELETE
+}
+
+enum Currency {
+  Euro
 }
 
 """
@@ -108,6 +169,17 @@ type DeleteRightPayload {
   msg: String
 }
 
+"""
+DeleteTokenInfo result with filterable data and count of affected entries
+"""
+type DeleteTokenInfoPayload {
+  tokenInfo(filter: TokenInfoFiltersInput, order: TokenInfoOrder, first: Int, offset: Int, group: [TokenInfoGroup!]): TokenInfoQueryResult!
+
+  """Count of deleted TokenInfo entities"""
+  count: Int!
+  msg: String
+}
+
 """DeleteValue result with filterable data and count of affected entries"""
 type DeleteValuePayload {
   value(filter: ValueFiltersInput, order: ValueOrder, first: Int, offset: Int, group: [ValueGroup!]): ValueQueryResult!
@@ -130,6 +202,39 @@ enum Directions {
   write
   read
   delete
+}
+
+type Entity {
+  findTokenDataByID(id: String!): TokenData!
+  findUserDataByID(id: String!): UserData!
+}
+
+scalar federation__Scope
+
+scalar FieldSet
+
+"""Filter between start and end (start > value < end)"""
+input FloatFilterBetween {
+  start: Float!
+  end: Float!
+}
+
+"""Float Filter simple datatypes"""
+input FloatFilterInput {
+  and: [Float]
+  or: [Float]
+  not: FloatFilterInput
+  eq: Float
+  ne: Float
+  gt: Float
+  gte: Float
+  lt: Float
+  lte: Float
+  null: Boolean
+  notNull: Boolean
+  in: [Float]
+  notIn: [Float]
+  between: FloatFilterBetween
 }
 
 type Identity {
@@ -371,6 +476,15 @@ type Mutation {
   """delete Right filtered by selection and delete all matched values"""
   deleteRight(filter: RightFiltersInput!): DeleteRightPayload
 
+  """Add new TokenInfo"""
+  addTokenInfo(input: [TokenInfoInput!]!): AddTokenInfoPayload
+
+  """update TokenInfo filtered by selection and update all matched values"""
+  updateTokenInfo(input: UpdateTokenInfoInput!): UpdateTokenInfoPayload
+
+  """delete TokenInfo filtered by selection and delete all matched values"""
+  deleteTokenInfo(filter: TokenInfoFiltersInput!): DeleteTokenInfoPayload
+
   """Add new Value"""
   addValue(input: [ValueInput!]!): AddValuePayload
 
@@ -393,6 +507,9 @@ type Mutation {
 type Query {
   identitiesWithValueAccess(forValue: String!): [Identity!]!
   allRelatedValues(identityId: String!): [Value!]!
+  userData: UserData!
+  _entities(representations: [_Any!]!): [_Entity]!
+  _service: _Service!
 
   """return one Identity selected by PrimaryKey(s)"""
   getIdentity(id: String!): Identity
@@ -417,6 +534,14 @@ type Query {
   return a list of  Right filterable, pageination, orderbale, groupable ...
   """
   queryRight(filter: RightFiltersInput, order: RightOrder, first: Int, offset: Int, group: [RightGroup!]): RightQueryResult
+
+  """return one TokenInfo selected by PrimaryKey(s)"""
+  getTokenInfo(id: String!): TokenInfo
+
+  """
+  return a list of  TokenInfo filterable, pageination, orderbale, groupable ...
+  """
+  queryTokenInfo(filter: TokenInfoFiltersInput, order: TokenInfoOrder, first: Int, offset: Int, group: [TokenInfoGroup!]): TokenInfoQueryResult
 
   """return one Value selected by PrimaryKey(s)"""
   getValue(id: String!): Value
@@ -588,6 +713,92 @@ input TimeFilterInput {
   between: TimeFilterBetween
 }
 
+type TokenData {
+  id: String!
+  vaultName: String
+  usedEncryption: Int
+  used: Boolean!
+  encryptionLimit: Int!
+}
+
+type TokenInfo {
+  id: String!
+  userId: String!
+  used: Boolean!
+  encryptionLimit: Int!
+  createdAt: Time
+  updatedAt: Time
+  deletedAt: Time
+  costCalculation(month: Int, year: Int): CostCalculation!
+}
+
+"""
+Filter input selection for TokenInfo
+Can be used f.e.: by queryTokenInfo
+"""
+input TokenInfoFiltersInput {
+  id: StringFilterInput
+  userId: StringFilterInput
+  used: BooleanFilterInput
+  encryptionLimit: IntFilterInput
+  createdAt: TimeFilterInput
+  updatedAt: TimeFilterInput
+  deletedAt: TimeFilterInput
+  and: [TokenInfoFiltersInput]
+  or: [TokenInfoFiltersInput]
+  not: TokenInfoFiltersInput
+}
+
+"""
+Groupable data for  TokenInfo
+Can be used f.e.: by queryTokenInfo
+"""
+enum TokenInfoGroup {
+  id
+  userId
+  used
+  encryptionLimit
+  createdAt
+  updatedAt
+  deletedAt
+}
+
+"""TokenInfo Input value to add new TokenInfo"""
+input TokenInfoInput {
+  encryptionLimit: Int!
+}
+
+"""Order TokenInfo by asc or desc """
+input TokenInfoOrder {
+  asc: TokenInfoOrderable
+  desc: TokenInfoOrderable
+}
+
+"""
+for TokenInfo a enum of all orderable entities
+can be used f.e.: queryTokenInfo
+"""
+enum TokenInfoOrderable {
+  id
+  userId
+  used
+  encryptionLimit
+}
+
+"""
+TokenInfo Patch value all values are optional to update TokenInfo entities
+"""
+input TokenInfoPatch {
+  encryptionLimit: Int
+}
+
+"""TokenInfo result"""
+type TokenInfoQueryResult {
+  data: [TokenInfo!]!
+  count: Int!
+  totalCount: Int!
+}
+
 """
 Update rules for Identity multiupdates simple possible by global filtervalue
 """
@@ -640,6 +851,23 @@ type UpdateRightPayload {
 }
 
 """
+Update rules for TokenInfo multiupdates simple possible by global filtervalue
+"""
+input UpdateTokenInfoInput {
+  filter: TokenInfoFiltersInput!
+  set: TokenInfoPatch!
+}
+
+"""UpdateTokenInfo result with filterable data and affected rows"""
+type UpdateTokenInfoPayload {
+  tokenInfo(filter: TokenInfoFiltersInput, order: TokenInfoOrder, first: Int, offset: Int, group: [TokenInfoGroup!]): TokenInfoQueryResult!
+
+  """Count of affected updates"""
+  count: Int!
+  affected: [TokenInfo!]!
+}
+
+"""
 Update rules for Value multiupdates simple possible by global filtervalue
 """
 input UpdateValueInput {
@@ -671,6 +899,12 @@ type UpdateVaultPayload {
   """Count of affected updates"""
   count: Int!
   affected: [Vault!]!
+}
+
+type UserData {
+  id: String!
+  tokens: [TokenData!]!
+  hasTokens: Boolean!
 }
 
 type Value {
@@ -761,6 +995,8 @@ type Vault {
   id: String!
   name: String!
   identities: [Identity!]
+  tokenID: String!
+  token: TokenInfo!
   values: [Value!]
   createdAt: Time
   updatedAt: Time
@@ -775,6 +1011,8 @@ input VaultFiltersInput {
   id: StringFilterInput
   name: StringFilterInput
   identities: IdentityFiltersInput
+  tokenID: StringFilterInput
+  token: TokenInfoFiltersInput
   values: ValueFiltersInput
   createdAt: TimeFilterInput
   updatedAt: TimeFilterInput
@@ -791,6 +1029,7 @@ Can be used f.e.: by queryVault
 enum VaultGroup {
   id
   name
+  tokenID
   createdAt
   updatedAt
   deletedAt
@@ -816,6 +1055,7 @@ can be used f.e.: queryVault
 enum VaultOrderable {
   id
   name
+  tokenID
 }
 
 """Vault Patch value all values are optional to update Vault entities"""

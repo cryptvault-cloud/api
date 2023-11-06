@@ -5,21 +5,24 @@ import (
 	"regexp"
 )
 
-var ValuePatternRegex *regexp.Regexp
-var ValuesPatternRegex *regexp.Regexp
-
-const ValuePatternRegexStr = `^\((?P<directions>(r|w|d)+)\)(?P<target>(VALUES|IDENTITY|SYSTEM))(?P<pattern>(\.[a-z0-9_\->\*]+)+)$`
-const ValuesPatternRegexStr = `^(VALUES|IDENTITY|SYSTEM)(\.[a-z0-9_\-]+)+$`
-
-func init() {
-	ValuePatternRegex = regexp.MustCompile(ValuePatternRegexStr)
-	ValuesPatternRegex = regexp.MustCompile(ValuesPatternRegexStr)
-}
-
 type RightDescription struct {
 	Target     RightTarget
 	Right      Directions
 	RightValue string
+}
+
+var ValuePatternRegex *regexp.Regexp
+
+var ValuesPatternRegex *regexp.Regexp
+
+const (
+	ValuePatternRegexStr  = `^\((?P<directions>(r|w|d)+)\)(?P<target>(VALUES|IDENTITY|SYSTEM))(?P<pattern>(\.([a-z0-9_\-]+|[>\*]{1}))+)$`
+	ValuesPatternRegexStr = `^(VALUES|IDENTITY|SYSTEM)(\.[a-z0-9_\-]+)+$`
+)
+
+func init() {
+	ValuePatternRegex = regexp.MustCompile(ValuePatternRegexStr)
+	ValuesPatternRegex = regexp.MustCompile(ValuesPatternRegexStr)
 }
 
 func GetRightDescriptionByString(valuePattern string) ([]RightDescription, error) {
