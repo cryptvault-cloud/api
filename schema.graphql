@@ -4,7 +4,6 @@ directive @admin on FIELD_DEFINITION
 
 directive @userAuth on FIELD_DEFINITION
 
-
 """AddCostValue result with filterable data and affected rows"""
 type AddCostValuePayload {
   costValue(filter: CostValueFiltersInput, order: CostValueOrder, first: Int, offset: Int, group: [CostValueGroup!]): CostValueQueryResult!
