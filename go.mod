@@ -4,7 +4,7 @@ go 1.20
 
 require github.com/Khan/genqlient v0.6.0
 
-require github.com/cryptvault-cloud/helper v0.0.11
+require github.com/cryptvault-cloud/helper v0.0.12
 
 require (
 	github.com/vektah/gqlparser/v2 v2.5.8 // indirect

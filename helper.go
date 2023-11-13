@@ -3,17 +3,16 @@ package api
 import (
 	"fmt"
 	"regexp"
+
+	"github.com/cryptvault-cloud/helper"
 )
 
 var ValuePatternRegex *regexp.Regexp
 var ValuesPatternRegex *regexp.Regexp
 
-const ValuePatternRegexStr = `^\((?P<directions>(r|w|d)+)\)(?P<target>(VALUES|IDENTITY|SYSTEM))(?P<pattern>(\.[a-z0-9_\->\*]+)+)$`
-const ValuesPatternRegexStr = `^(VALUES|IDENTITY|SYSTEM)(\.[a-z0-9_\-]+)+$`
-
 func init() {
-	ValuePatternRegex = regexp.MustCompile(ValuePatternRegexStr)
-	ValuesPatternRegex = regexp.MustCompile(ValuesPatternRegexStr)
+	ValuePatternRegex = regexp.MustCompile(helper.ValuePatternRegexStr)
+	ValuesPatternRegex = regexp.MustCompile(helper.ValuesPatternRegexStr)
 }
 
 type RightDescription struct {
@@ -24,7 +23,7 @@ type RightDescription struct {
 
 func GetRightDescriptionByString(valuePattern string) ([]RightDescription, error) {
 	if !ValuePatternRegex.MatchString(valuePattern) {
-		return nil, fmt.Errorf("valuePattern does not match %s", ValuePatternRegexStr)
+		return nil, fmt.Errorf("valuePattern does not match %s", helper.ValuePatternRegexStr)
 	}
 	var direction, target, pattern []byte
 

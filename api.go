@@ -431,7 +431,7 @@ func (a *ProtectedApi) UpdateValue(id, key, value string, valueType ValueType) (
 	return valueId, err
 }
 
-// SyncValues sync all values by check identity and get all related identies wich also has access to this value
+// SyncValues sync all values by check identity and get all related identities wich also has access to this value
 func (a *ProtectedApi) SyncValues(identityId string) error {
 	values, err := a.GetAllRelatedValues(identityId)
 	if err != nil {
@@ -444,12 +444,6 @@ func (a *ProtectedApi) SyncValues(identityId string) error {
 		}
 	}
 	return nil
-}
-
-type checkIdentitiesHaveRelatedSignatureChainAble interface {
-	GetCreatorVerification() string
-	GetId() string
-	GetPublicKey() helper.Base64PublicPem
 }
 
 func (a *ProtectedApi) checkIdentityHaveRelatedSignatureChain(identity *getRelatedIdentiesIdentitiesWithValueAccessIdentity, other []*getRelatedIdentiesIdentitiesWithValueAccessIdentity) error {

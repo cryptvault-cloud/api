@@ -65,14 +65,6 @@ input BooleanFilterInput {
   notNull: Boolean
 }
 
-type CostCalculation {
-  usedCostEncryption: Int!
-  calculationStart: Time!
-  calculationEnd: Time!
-  cost: Float!
-  currency: Currency!
-}
-
 type CostValue {
   value_hash: String!
   tokenID: String!
@@ -837,7 +829,6 @@ type TokenInfo {
   createdAt: Time
   updatedAt: Time
   deletedAt: Time
-  costCalculation(month: Int, year: Int): CostCalculation!
 }
 
 """
