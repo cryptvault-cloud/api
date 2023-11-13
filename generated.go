@@ -87,8 +87,9 @@ const (
 
 // __addIdentityInput is used internally by genqlient
 type __addIdentityInput struct {
-	Name      string                 `json:"name"`
-	PublicKey helper.Base64PublicPem `json:"publicKey"`
+	Name                string                 `json:"name"`
+	PublicKey           helper.Base64PublicPem `json:"publicKey"`
+	CreatorVerification string                 `json:"creatorVerification"`
 }
 
 // GetName returns __addIdentityInput.Name, and is useful for accessing the field via an interface.
@@ -96,6 +97,9 @@ func (v *__addIdentityInput) GetName() string { return v.Name }
 
 // GetPublicKey returns __addIdentityInput.PublicKey, and is useful for accessing the field via an interface.
 func (v *__addIdentityInput) GetPublicKey() helper.Base64PublicPem { return v.PublicKey }
+
+// GetCreatorVerification returns __addIdentityInput.CreatorVerification, and is useful for accessing the field via an interface.
+func (v *__addIdentityInput) GetCreatorVerification() string { return v.CreatorVerification }
 
 // __addIdentityValueInput is used internally by genqlient
 type __addIdentityValueInput struct {
@@ -647,9 +651,11 @@ func (v *getIdentityResponse) GetGetIdentity() *getIdentityGetIdentity { return 
 
 // getRelatedIdentiesIdentitiesWithValueAccessIdentity includes the requested fields of the GraphQL type Identity.
 type getRelatedIdentiesIdentitiesWithValueAccessIdentity struct {
-	Id        string                 `json:"id"`
-	Name      *string                `json:"name"`
-	PublicKey helper.Base64PublicPem `json:"publicKey"`
+	Id                  string                 `json:"id"`
+	Name                *string                `json:"name"`
+	PublicKey           helper.Base64PublicPem `json:"publicKey"`
+	CreatorVerification string                 `json:"creatorVerification"`
+	IsOperator          bool                   `json:"isOperator"`
 }
 
 // GetId returns getRelatedIdentiesIdentitiesWithValueAccessIdentity.Id, and is useful for accessing the field via an interface.
@@ -661,6 +667,16 @@ func (v *getRelatedIdentiesIdentitiesWithValueAccessIdentity) GetName() *string 
 // GetPublicKey returns getRelatedIdentiesIdentitiesWithValueAccessIdentity.PublicKey, and is useful for accessing the field via an interface.
 func (v *getRelatedIdentiesIdentitiesWithValueAccessIdentity) GetPublicKey() helper.Base64PublicPem {
 	return v.PublicKey
+}
+
+// GetCreatorVerification returns getRelatedIdentiesIdentitiesWithValueAccessIdentity.CreatorVerification, and is useful for accessing the field via an interface.
+func (v *getRelatedIdentiesIdentitiesWithValueAccessIdentity) GetCreatorVerification() string {
+	return v.CreatorVerification
+}
+
+// GetIsOperator returns getRelatedIdentiesIdentitiesWithValueAccessIdentity.IsOperator, and is useful for accessing the field via an interface.
+func (v *getRelatedIdentiesIdentitiesWithValueAccessIdentity) GetIsOperator() bool {
+	return v.IsOperator
 }
 
 // getRelatedIdentiesResponse is returned by getRelatedIdenties on success.
@@ -1013,8 +1029,8 @@ func (v *updateVaultUpdateVaultUpdateVaultPayloadAffectedVault) GetUpdatedAt() *
 
 // The query or mutation executed by addIdentity.
 const addIdentity_Operation = `
-mutation addIdentity ($name: String!, $publicKey: Base64PublicPem!) {
-	addIdentity(input: {name:$name,publicKey:$publicKey,rights:[]}) {
+mutation addIdentity ($name: String!, $publicKey: Base64PublicPem!, $creatorVerification: String!) {
+	addIdentity(input: {name:$name,publicKey:$publicKey,creatorVerification:$creatorVerification,rights:[]}) {
 		affected {
 			id
 		}
@@ -1027,13 +1043,15 @@ func addIdentity(
 	client graphql.Client,
 	name string,
 	publicKey helper.Base64PublicPem,
+	creatorVerification string,
 ) (*addIdentityResponse, error) {
 	req := &graphql.Request{
 		OpName: "addIdentity",
 		Query:  addIdentity_Operation,
 		Variables: &__addIdentityInput{
-			Name:      name,
-			PublicKey: publicKey,
+			Name:                name,
+			PublicKey:           publicKey,
+			CreatorVerification: creatorVerification,
 		},
 	}
 	var err error
@@ -1500,6 +1518,8 @@ query getRelatedIdenties ($value: String!) {
 		id
 		name
 		publicKey
+		creatorVerification
+		isOperator
 	}
 }
 `

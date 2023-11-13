@@ -1,76 +1,13 @@
-directive @SQL(order: Int, query: SqlQueryParams, mutation: SqlMutationParams) on OBJECT
-
-directive @SQL_GORM(value: String) on FIELD_DEFINITION
-
-directive @SQL_INDEX on FIELD_DEFINITION
-
-directive @SQL_INPUTTYPE_DIRECTIVE(value: [String!]) on FIELD_DEFINITION | OBJECT
-
-directive @SQL_INPUTTYPE_TAGS(value: [String!]) on FIELD_DEFINITION
-
-directive @SQL_INPUTTYPE_TAGS_INTERNAL(value: [String!]) on INPUT_FIELD_DEFINITION
-
-directive @SQL_PRIMARY on FIELD_DEFINITION
-
-directive @SQL_SKIP_MUTATION on FIELD_DEFINITION
+directive @auth(target: RightTarget!, right: [Directions!]!, valueMatchRegex: String!) on FIELD_DEFINITION
 
 directive @admin on FIELD_DEFINITION
 
-directive @auth(target: RightTarget!, right: [Directions!]!, valueMatchRegex: String!) on FIELD_DEFINITION
-
-directive @authenticated on FIELD_DEFINITION | OBJECT | INTERFACE | SCALAR | ENUM
-
-directive @composeDirective(name: String!) on SCHEMA
-
-"""
-The @defer directive may be specified on a fragment spread to imply
-de-prioritization, that causes the fragment to be omitted in the initial
-response, and delivered as a subsequent response afterward. A query with @defer
-directive will cause the request to potentially return multiple responses, where
-non-deferred data is delivered in the initial response and data deferred
-delivered in a subsequent response. @include and @skip take precedence over @defer.
-"""
-directive @defer(if: Boolean = true, label: String) on FRAGMENT_SPREAD | INLINE_FRAGMENT
-
-directive @extends on OBJECT | INTERFACE
-
-directive @external on OBJECT | FIELD_DEFINITION
-
-directive @inaccessible on ARGUMENT_DEFINITION | ENUM | ENUM_VALUE | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT | INTERFACE | OBJECT | SCALAR | UNION
-
-directive @interfaceObject on OBJECT
-
-directive @key(fields: FieldSet!, resolvable: Boolean = true) on OBJECT | INTERFACE
-
-directive @link(import: [String!], url: String!) on SCHEMA
-
-directive @override(from: String!) on FIELD_DEFINITION
-
-directive @provides(fields: FieldSet!) on FIELD_DEFINITION
-
-directive @requires(fields: FieldSet!) on FIELD_DEFINITION
-
-directive @requiresScopes(scopes: [[federation__Scope!]!]!) on FIELD_DEFINITION | OBJECT | INTERFACE | SCALAR | ENUM
-
-directive @shareable on FIELD_DEFINITION | OBJECT
-
-"""
-The @specifiedBy built-in directive is used within the type system definition
-language to provide a scalar specification URL for specifying the behavior of
-custom scalar types.
-"""
-directive @specifiedBy(url: String!) on SCALAR
-
-directive @tag(name: String!) on ARGUMENT_DEFINITION | ENUM | ENUM_VALUE | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT | INTERFACE | OBJECT | SCALAR | UNION
-
 directive @userAuth on FIELD_DEFINITION
 
-scalar _Any
-
-union _Entity = TokenData | UserData
-
-type _Service {
-  sdl: String
+"""AddCostValue result with filterable data and affected rows"""
+type AddCostValuePayload {
+  costValue(filter: CostValueFiltersInput, order: CostValueOrder, first: Int, offset: Int, group: [CostValueGroup!]): CostValueQueryResult!
+  affected: [CostValue!]!
 }
 
 """AddIdentity result with filterable data and affected rows"""
@@ -97,6 +34,12 @@ type AddTokenInfoPayload {
   affected: [TokenInfo!]!
 }
 
+"""AddToken result with filterable data and affected rows"""
+type AddTokenPayload {
+  token(filter: TokenFiltersInput, order: TokenOrder, first: Int, offset: Int, group: [TokenGroup!]): TokenQueryResult!
+  affected: [Token!]!
+}
+
 """AddValue result with filterable data and affected rows"""
 type AddValuePayload {
   value(filter: ValueFiltersInput, order: ValueOrder, first: Int, offset: Int, group: [ValueGroup!]): ValueQueryResult!
@@ -121,12 +64,77 @@ input BooleanFilterInput {
   notNull: Boolean
 }
 
-type CostCalculation {
-  usedCostEncryption: Int!
-  calculationStart: Time!
-  calculationEnd: Time!
-  cost: Float!
-  currency: Currency!
+type CostValue {
+  value_hash: String!
+  tokenID: String!
+  token: Token!
+  createdAt: Time
+  updatedAt: Time
+  deletedAt: Time
+}
+
+"""
+Filter input selection for CostValue
+    Can be used f.e.: by queryCostValue
+"""
+input CostValueFiltersInput {
+  value_hash: StringFilterInput
+  tokenID: StringFilterInput
+  token: TokenFiltersInput
+  createdAt: TimeFilterInput
+  updatedAt: TimeFilterInput
+  deletedAt: TimeFilterInput
+  and: [CostValueFiltersInput]
+  or: [CostValueFiltersInput]
+  not: CostValueFiltersInput
+}
+
+"""
+Groupable data for  CostValue
+    Can be used f.e.: by queryCostValue
+"""
+enum CostValueGroup {
+  value_hash
+  tokenID
+  createdAt
+  updatedAt
+  deletedAt
+}
+
+"""CostValue Input value to add new CostValue"""
+input CostValueInput {
+  value_hash: String!
+  tokenID: String!
+}
+
+"""Order CostValue by asc or desc"""
+input CostValueOrder {
+  asc: CostValueOrderable
+  desc: CostValueOrderable
+}
+
+"""
+for CostValue a enum of all orderable entities
+    can be used f.e.: queryCostValue
+"""
+enum CostValueOrderable {
+  value_hash
+  tokenID
+}
+
+"""
+CostValue Patch value all values are optional to update CostValue entities
+"""
+input CostValuePatch {
+  value_hash: String
+  tokenID: String
+}
+
+"""CostValue result"""
+type CostValueQueryResult {
+  data: [CostValue!]!
+  count: Int!
+  totalCount: Int!
 }
 
 enum CostValuesType {
@@ -136,6 +144,17 @@ enum CostValuesType {
 
 enum Currency {
   Euro
+}
+
+"""
+DeleteCostValue result with filterable data and count of affected entries
+"""
+type DeleteCostValuePayload {
+  costValue(filter: CostValueFiltersInput, order: CostValueOrder, first: Int, offset: Int, group: [CostValueGroup!]): CostValueQueryResult!
+
+  """Count of deleted CostValue entities"""
+  count: Int!
+  msg: String
 }
 
 """
@@ -180,6 +199,15 @@ type DeleteTokenInfoPayload {
   msg: String
 }
 
+"""DeleteToken result with filterable data and count of affected entries"""
+type DeleteTokenPayload {
+  token(filter: TokenFiltersInput, order: TokenOrder, first: Int, offset: Int, group: [TokenGroup!]): TokenQueryResult!
+
+  """Count of deleted Token entities"""
+  count: Int!
+  msg: String
+}
+
 """DeleteValue result with filterable data and count of affected entries"""
 type DeleteValuePayload {
   value(filter: ValueFiltersInput, order: ValueOrder, first: Int, offset: Int, group: [ValueGroup!]): ValueQueryResult!
@@ -203,15 +231,6 @@ enum Directions {
   read
   delete
 }
-
-type Entity {
-  findTokenDataByID(id: String!): TokenData!
-  findUserDataByID(id: String!): UserData!
-}
-
-scalar federation__Scope
-
-scalar FieldSet
 
 """Filter between start and end (start > value < end)"""
 input FloatFilterBetween {
@@ -244,6 +263,8 @@ type Identity {
   rights: [Right!]!
   vaultID: String!
   vault: Vault!
+  creatorVerification: String!
+  isOperator: Boolean!
   createdAt: Time
   updatedAt: Time
   deletedAt: Time
@@ -251,7 +272,7 @@ type Identity {
 
 """
 Filter input selection for Identity
-Can be used f.e.: by queryIdentity
+    Can be used f.e.: by queryIdentity
 """
 input IdentityFiltersInput {
   id: StringFilterInput
@@ -259,6 +280,8 @@ input IdentityFiltersInput {
   rights: RightFiltersInput
   vaultID: StringFilterInput
   vault: VaultFiltersInput
+  creatorVerification: StringFilterInput
+  isOperator: BooleanFilterInput
   createdAt: TimeFilterInput
   updatedAt: TimeFilterInput
   deletedAt: TimeFilterInput
@@ -269,12 +292,14 @@ input IdentityFiltersInput {
 
 """
 Groupable data for  Identity
-Can be used f.e.: by queryIdentity
+    Can be used f.e.: by queryIdentity
 """
 enum IdentityGroup {
   id
   name
   vaultID
+  creatorVerification
+  isOperator
   createdAt
   updatedAt
   deletedAt
@@ -285,9 +310,10 @@ input IdentityInput {
   name: String
   publicKey: Base64PublicPem!
   rights: [RightInput!]!
+  creatorVerification: String!
 }
 
-"""Order Identity by asc or desc """
+"""Order Identity by asc or desc"""
 input IdentityOrder {
   asc: IdentityOrderable
   desc: IdentityOrderable
@@ -295,12 +321,14 @@ input IdentityOrder {
 
 """
 for Identity a enum of all orderable entities
-can be used f.e.: queryIdentity
+    can be used f.e.: queryIdentity
 """
 enum IdentityOrderable {
   id
   name
   vaultID
+  creatorVerification
+  isOperator
 }
 
 """
@@ -310,6 +338,7 @@ input IdentityPatch {
   name: String
   publicKey: Base64PublicPem
   rights: [RightPatch!]
+  creatorVerification: String
 }
 
 """Identity result"""
@@ -333,7 +362,7 @@ type IdentityValue {
 
 """
 Filter input selection for IdentityValue
-Can be used f.e.: by queryIdentityValue
+    Can be used f.e.: by queryIdentityValue
 """
 input IdentityValueFiltersInput {
   id: IDFilterInput
@@ -352,7 +381,7 @@ input IdentityValueFiltersInput {
 
 """
 Groupable data for  IdentityValue
-Can be used f.e.: by queryIdentityValue
+    Can be used f.e.: by queryIdentityValue
 """
 enum IdentityValueGroup {
   id
@@ -371,7 +400,7 @@ input IdentityValueInput {
   passframe: String!
 }
 
-"""Order IdentityValue by asc or desc """
+"""Order IdentityValue by asc or desc"""
 input IdentityValueOrder {
   asc: IdentityValueOrderable
   desc: IdentityValueOrderable
@@ -379,7 +408,7 @@ input IdentityValueOrder {
 
 """
 for IdentityValue a enum of all orderable entities
-can be used f.e.: queryIdentityValue
+    can be used f.e.: queryIdentityValue
 """
 enum IdentityValueOrderable {
   id
@@ -439,6 +468,11 @@ input IntFilterInput {
   in: [Int]
   notIn: [Int]
   between: IntFilterBetween
+}
+
+type Money {
+  value: Float!
+  currency: String!
 }
 
 type Mutation {
@@ -502,14 +536,30 @@ type Mutation {
 
   """delete Vault filtered by selection and delete all matched values"""
   deleteVault(filter: VaultFiltersInput!): DeleteVaultPayload
+
+  """Add new CostValue"""
+  addCostValue(input: [CostValueInput!]!): AddCostValuePayload
+
+  """update CostValue filtered by selection and update all matched values"""
+  updateCostValue(input: UpdateCostValueInput!): UpdateCostValuePayload
+
+  """delete CostValue filtered by selection and delete all matched values"""
+  deleteCostValue(filter: CostValueFiltersInput!): DeleteCostValuePayload
+
+  """Add new Token"""
+  addToken(input: [TokenInput!]!): AddTokenPayload
+
+  """update Token filtered by selection and update all matched values"""
+  updateToken(input: UpdateTokenInput!): UpdateTokenPayload
+
+  """delete Token filtered by selection and delete all matched values"""
+  deleteToken(filter: TokenFiltersInput!): DeleteTokenPayload
 }
 
 type Query {
   identitiesWithValueAccess(forValue: String!): [Identity!]!
   allRelatedValues(identityId: String!): [Value!]!
   userData: UserData!
-  _entities(representations: [_Any!]!): [_Entity]!
-  _service: _Service!
 
   """return one Identity selected by PrimaryKey(s)"""
   getIdentity(id: String!): Identity
@@ -558,6 +608,24 @@ type Query {
   return a list of  Vault filterable, pageination, orderbale, groupable ...
   """
   queryVault(filter: VaultFiltersInput, order: VaultOrder, first: Int, offset: Int, group: [VaultGroup!]): VaultQueryResult
+  startBillJob: Boolean!
+  paymentPortalLink: String!
+
+  """return one CostValue selected by PrimaryKey(s)"""
+  getCostValue(value_hash: String!): CostValue
+
+  """
+  return a list of  CostValue filterable, pageination, orderbale, groupable ...
+  """
+  queryCostValue(filter: CostValueFiltersInput, order: CostValueOrder, first: Int, offset: Int, group: [CostValueGroup!]): CostValueQueryResult
+
+  """return one Token selected by PrimaryKey(s)"""
+  getToken(id: String!): Token
+
+  """
+  return a list of  Token filterable, pageination, orderbale, groupable ...
+  """
+  queryToken(filter: TokenFiltersInput, order: TokenOrder, first: Int, offset: Int, group: [TokenGroup!]): TokenQueryResult
 }
 
 type Right {
@@ -574,7 +642,7 @@ type Right {
 
 """
 Filter input selection for Right
-Can be used f.e.: by queryRight
+    Can be used f.e.: by queryRight
 """
 input RightFiltersInput {
   id: IDFilterInput
@@ -593,7 +661,7 @@ input RightFiltersInput {
 
 """
 Groupable data for  Right
-Can be used f.e.: by queryRight
+    Can be used f.e.: by queryRight
 """
 enum RightGroup {
   id
@@ -612,7 +680,7 @@ input RightInput {
   identityID: String!
 }
 
-"""Order Right by asc or desc """
+"""Order Right by asc or desc"""
 input RightOrder {
   asc: RightOrderable
   desc: RightOrderable
@@ -620,7 +688,7 @@ input RightOrder {
 
 """
 for Right a enum of all orderable entities
-can be used f.e.: queryRight
+    can be used f.e.: queryRight
 """
 enum RightOrderable {
   id
@@ -647,24 +715,6 @@ enum RightTarget {
   values
   system
   identities
-}
-
-input SqlCreateExtension {
-  value: Boolean!
-  directiveExt: [String!]
-}
-
-input SqlMutationParams {
-  add: SqlCreateExtension
-  update: SqlCreateExtension
-  delete: SqlCreateExtension
-  directiveExt: [String!]
-}
-
-input SqlQueryParams {
-  get: SqlCreateExtension
-  query: SqlCreateExtension
-  directiveExt: [String!]
 }
 
 """String Filter simple datatypes"""
@@ -713,12 +763,61 @@ input TimeFilterInput {
   between: TimeFilterBetween
 }
 
+type Token {
+  id: String!
+  userId: String!
+  vaultId: String!
+  subscriptionPriceId: String!
+  subscriptionId: String!
+  stripeCustomerId: String!
+  createdAt: Time
+  updatedAt: Time
+}
+
 type TokenData {
   id: String!
+  costEncryptionCount: Int
+  currentEncryptionCost: Money
+  total: Money
+  periodStart: Time
+  periodEnd: Time
   vaultName: String
   usedEncryption: Int
   used: Boolean!
   encryptionLimit: Int!
+}
+
+"""
+Filter input selection for Token
+    Can be used f.e.: by queryToken
+"""
+input TokenFiltersInput {
+  id: StringFilterInput
+  userId: StringFilterInput
+  vaultId: StringFilterInput
+  subscriptionPriceId: StringFilterInput
+  subscriptionId: StringFilterInput
+  stripeCustomerId: StringFilterInput
+  createdAt: TimeFilterInput
+  updatedAt: TimeFilterInput
+  and: [TokenFiltersInput]
+  or: [TokenFiltersInput]
+  not: TokenFiltersInput
+}
+
+"""
+Groupable data for  Token
+    Can be used f.e.: by queryToken
+"""
+enum TokenGroup {
+  id
+  userId
+  vaultId
+  subscriptionPriceId
+  subscriptionId
+  stripeCustomerId
+  createdAt
+  updatedAt
 }
 
 type TokenInfo {
@@ -729,12 +828,11 @@ type TokenInfo {
   createdAt: Time
   updatedAt: Time
   deletedAt: Time
-  costCalculation(month: Int, year: Int): CostCalculation!
 }
 
 """
 Filter input selection for TokenInfo
-Can be used f.e.: by queryTokenInfo
+    Can be used f.e.: by queryTokenInfo
 """
 input TokenInfoFiltersInput {
   id: StringFilterInput
@@ -751,7 +849,7 @@ input TokenInfoFiltersInput {
 
 """
 Groupable data for  TokenInfo
-Can be used f.e.: by queryTokenInfo
+    Can be used f.e.: by queryTokenInfo
 """
 enum TokenInfoGroup {
   id
@@ -768,7 +866,7 @@ input TokenInfoInput {
   encryptionLimit: Int!
 }
 
-"""Order TokenInfo by asc or desc """
+"""Order TokenInfo by asc or desc"""
 input TokenInfoOrder {
   asc: TokenInfoOrderable
   desc: TokenInfoOrderable
@@ -776,7 +874,7 @@ input TokenInfoOrder {
 
 """
 for TokenInfo a enum of all orderable entities
-can be used f.e.: queryTokenInfo
+    can be used f.e.: queryTokenInfo
 """
 enum TokenInfoOrderable {
   id
@@ -797,6 +895,67 @@ type TokenInfoQueryResult {
   data: [TokenInfo!]!
   count: Int!
   totalCount: Int!
+}
+
+"""Token Input value to add new Token"""
+input TokenInput {
+  userId: String!
+  vaultId: String!
+  subscriptionPriceId: String!
+  subscriptionId: String!
+  stripeCustomerId: String!
+}
+
+"""Order Token by asc or desc"""
+input TokenOrder {
+  asc: TokenOrderable
+  desc: TokenOrderable
+}
+
+"""
+for Token a enum of all orderable entities
+    can be used f.e.: queryToken
+"""
+enum TokenOrderable {
+  id
+  userId
+  vaultId
+  subscriptionPriceId
+  subscriptionId
+  stripeCustomerId
+}
+
+"""Token Patch value all values are optional to update Token entities"""
+input TokenPatch {
+  userId: String
+  vaultId: String
+  subscriptionPriceId: String
+  subscriptionId: String
+  stripeCustomerId: String
+}
+
+"""Token result"""
+type TokenQueryResult {
+  data: [Token!]!
+  count: Int!
+  totalCount: Int!
+}
+
+"""
+Update rules for CostValue multiupdates simple possible by global filtervalue
+"""
+input UpdateCostValueInput {
+  filter: CostValueFiltersInput!
+  set: CostValuePatch!
+}
+
+"""UpdateCostValue result with filterable data and affected rows"""
+type UpdateCostValuePayload {
+  costValue(filter: CostValueFiltersInput, order: CostValueOrder, first: Int, offset: Int, group: [CostValueGroup!]): CostValueQueryResult!
+
+  """Count of affected updates"""
+  count: Int!
+  affected: [CostValue!]!
 }
 
 """
@@ -868,6 +1027,23 @@ type UpdateTokenInfoPayload {
 }
 
 """
+Update rules for Token multiupdates simple possible by global filtervalue
+"""
+input UpdateTokenInput {
+  filter: TokenFiltersInput!
+  set: TokenPatch!
+}
+
+"""UpdateToken result with filterable data and affected rows"""
+type UpdateTokenPayload {
+  token(filter: TokenFiltersInput, order: TokenOrder, first: Int, offset: Int, group: [TokenGroup!]): TokenQueryResult!
+
+  """Count of affected updates"""
+  count: Int!
+  affected: [Token!]!
+}
+
+"""
 Update rules for Value multiupdates simple possible by global filtervalue
 """
 input UpdateValueInput {
@@ -905,6 +1081,8 @@ type UserData {
   id: String!
   tokens: [TokenData!]!
   hasTokens: Boolean!
+  balance: Money!
+  hasPaymentUser: Boolean!
 }
 
 type Value {
@@ -921,7 +1099,7 @@ type Value {
 
 """
 Filter input selection for Value
-Can be used f.e.: by queryValue
+    Can be used f.e.: by queryValue
 """
 input ValueFiltersInput {
   id: StringFilterInput
@@ -940,7 +1118,7 @@ input ValueFiltersInput {
 
 """
 Groupable data for  Value
-Can be used f.e.: by queryValue
+    Can be used f.e.: by queryValue
 """
 enum ValueGroup {
   id
@@ -957,7 +1135,7 @@ input ValueInput {
   type: ValueType!
 }
 
-"""Order Value by asc or desc """
+"""Order Value by asc or desc"""
 input ValueOrder {
   asc: ValueOrderable
   desc: ValueOrderable
@@ -965,7 +1143,7 @@ input ValueOrder {
 
 """
 for Value a enum of all orderable entities
-can be used f.e.: queryValue
+    can be used f.e.: queryValue
 """
 enum ValueOrderable {
   id
@@ -1005,7 +1183,7 @@ type Vault {
 
 """
 Filter input selection for Vault
-Can be used f.e.: by queryVault
+    Can be used f.e.: by queryVault
 """
 input VaultFiltersInput {
   id: StringFilterInput
@@ -1024,7 +1202,7 @@ input VaultFiltersInput {
 
 """
 Groupable data for  Vault
-Can be used f.e.: by queryVault
+    Can be used f.e.: by queryVault
 """
 enum VaultGroup {
   id
@@ -1042,7 +1220,7 @@ input VaultInput {
   values: [ValueInput!]
 }
 
-"""Order Vault by asc or desc """
+"""Order Vault by asc or desc"""
 input VaultOrder {
   asc: VaultOrderable
   desc: VaultOrderable
@@ -1050,7 +1228,7 @@ input VaultOrder {
 
 """
 for Vault a enum of all orderable entities
-can be used f.e.: queryVault
+    can be used f.e.: queryVault
 """
 enum VaultOrderable {
   id
