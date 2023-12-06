@@ -190,5 +190,6 @@ mutation deleteIdentityValue($id: ID!){
 query allRelatedValues($identity: String!){
   allRelatedValues(identityId: $identity){
     id
+    name
   }
 }

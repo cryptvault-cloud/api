@@ -423,11 +423,15 @@ func (v *addValueResponse) GetAddValue() *addValueAddValueAddValuePayload { retu
 
 // allRelatedValuesAllRelatedValuesValue includes the requested fields of the GraphQL type Value.
 type allRelatedValuesAllRelatedValuesValue struct {
-	Id string `json:"id"`
+	Id   string `json:"id"`
+	Name string `json:"name"`
 }
 
 // GetId returns allRelatedValuesAllRelatedValuesValue.Id, and is useful for accessing the field via an interface.
 func (v *allRelatedValuesAllRelatedValuesValue) GetId() string { return v.Id }
+
+// GetName returns allRelatedValuesAllRelatedValuesValue.Name, and is useful for accessing the field via an interface.
+func (v *allRelatedValuesAllRelatedValuesValue) GetName() string { return v.Name }
 
 // allRelatedValuesResponse is returned by allRelatedValues on success.
 type allRelatedValuesResponse struct {
@@ -1186,6 +1190,7 @@ const allRelatedValues_Operation = `
 query allRelatedValues ($identity: String!) {
 	allRelatedValues(identityId: $identity) {
 		id
+		name
 	}
 }
 `

@@ -369,8 +369,8 @@ func (a *ProtectedApi) GetValueByName(name string) (*getValueByNameQueryValueVal
 }
 
 func (a *ProtectedApi) UpdateValue(id, key, value string, valueType ValueType) (string, error) {
-	if strings.Contains(value, "*") || strings.Contains(value, ">") {
-		return "", errors.New("value can not have wildcard symbols * or >")
+	if strings.Contains(key, "*") || strings.Contains(key, ">") {
+		return "", errors.New("explizit key can not have wildcard symbols * or >")
 	}
 	resp, err := a.GetValueById(id)
 	if err != nil {
@@ -438,7 +438,7 @@ func (a *ProtectedApi) SyncValues(identityId string) error {
 		return err
 	}
 	for _, v := range values {
-		err := a.SyncValue(v)
+		err := a.SyncValue(v.Id)
 		if err != nil {
 			return err
 		}
@@ -600,12 +600,10 @@ func (a *ProtectedApi) getDecryptedPassframe(identityId string, value []Encrypte
 	return "", errors.New("getEncryptedPassframe: given Identity not found at saved values ")
 }
 
-func (a *ProtectedApi) GetAllRelatedValues(identityId string) ([]string, error) {
+func (a *ProtectedApi) GetAllRelatedValues(identityId string) ([]*allRelatedValuesAllRelatedValuesValue, error) {
 	resp, err := allRelatedValues(context.Background(), a.client, identityId)
 	if err != nil {
 		return nil, err
 	}
-	return helper.Map[*allRelatedValuesAllRelatedValuesValue, string](resp.AllRelatedValues, func(v *allRelatedValuesAllRelatedValuesValue) string {
-		return v.Id
-	}), nil
+	return resp.AllRelatedValues, nil
 }
