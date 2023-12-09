@@ -77,6 +77,19 @@ query getIdentity($id: String!) {
   }
 }
 
+query allIdentities{
+  queryIdentity{
+    data{
+      name
+      rights{
+        target
+        right
+        rightValuePattern
+      }
+    }
+  }
+}
+
 query getRelatedIdenties($value: String!) {
   identitiesWithValueAccess(forValue: $value) {
     id
@@ -191,5 +204,23 @@ query allRelatedValues($identity: String!){
   allRelatedValues(identityId: $identity){
     id
     name
+  }
+}
+
+query allRelatedValuesWithIdentityValues($identity: String!) {
+  allRelatedValues(identityId: $identity) {
+    id
+    name
+    value {
+      id
+      identityID
+    }
+  }
+}
+
+
+mutation removeIdentityValue($id: ID) {
+  deleteIdentityValue(filter: { id: {eq:$id} }) {
+    count
   }
 }

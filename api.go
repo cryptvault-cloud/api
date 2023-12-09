@@ -178,6 +178,14 @@ type CreateIdentityResponse struct {
 	PrivateKey *ecdsa.PrivateKey
 }
 
+func (a *ProtectedApi) DeleteIdentityValue(id *string) (int, error) {
+	resp, err := removeIdentityValue(context.Background(), a.client, id)
+	if err != nil {
+		return 0, err
+	}
+	return resp.DeleteIdentityValue.Count, nil
+}
+
 func (a *ProtectedApi) CreateIdentity(name string, rights []*RightInput) (*CreateIdentityResponse, error) {
 	priv, pub, err := a.api.GetNewIdentityKeyPair()
 	if err != nil {
@@ -322,6 +330,10 @@ func (a *ProtectedApi) GetIdentityValueById(id string) (*IdentityValue, error) {
 		UpdatedAt: resp.GetValue.UpdatedAt,
 		Value:     password,
 	}, nil
+}
+
+func (a *ProtectedApi) GetAllIdentities() (*allIdentitiesResponse, error) {
+	return allIdentities(context.Background(), a.client)
 }
 
 type IdentityValue struct {
@@ -602,6 +614,14 @@ func (a *ProtectedApi) getDecryptedPassframe(identityId string, value []Encrypte
 
 func (a *ProtectedApi) GetAllRelatedValues(identityId string) ([]*allRelatedValuesAllRelatedValuesValue, error) {
 	resp, err := allRelatedValues(context.Background(), a.client, identityId)
+	if err != nil {
+		return nil, err
+	}
+	return resp.AllRelatedValues, nil
+}
+
+func (a *ProtectedApi) GetAllRelatedValuesWithIdentityValues(identityId string) ([]*allRelatedValuesWithIdentityValuesAllRelatedValuesValue, error) {
+	resp, err := allRelatedValuesWithIdentityValues(context.Background(), a.client, identityId)
 	if err != nil {
 		return nil, err
 	}

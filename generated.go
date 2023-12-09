@@ -137,6 +137,14 @@ type __allRelatedValuesInput struct {
 // GetIdentity returns __allRelatedValuesInput.Identity, and is useful for accessing the field via an interface.
 func (v *__allRelatedValuesInput) GetIdentity() string { return v.Identity }
 
+// __allRelatedValuesWithIdentityValuesInput is used internally by genqlient
+type __allRelatedValuesWithIdentityValuesInput struct {
+	Identity string `json:"identity"`
+}
+
+// GetIdentity returns __allRelatedValuesWithIdentityValuesInput.Identity, and is useful for accessing the field via an interface.
+func (v *__allRelatedValuesWithIdentityValuesInput) GetIdentity() string { return v.Identity }
+
 // __createNewVaultInput is used internally by genqlient
 type __createNewVaultInput struct {
 	Name              string                 `json:"name"`
@@ -246,6 +254,14 @@ type __getVaultInput struct {
 
 // GetId returns __getVaultInput.Id, and is useful for accessing the field via an interface.
 func (v *__getVaultInput) GetId() string { return v.Id }
+
+// __removeIdentityValueInput is used internally by genqlient
+type __removeIdentityValueInput struct {
+	Id *string `json:"id"`
+}
+
+// GetId returns __removeIdentityValueInput.Id, and is useful for accessing the field via an interface.
+func (v *__removeIdentityValueInput) GetId() *string { return v.Id }
 
 // __updateIdentityInput is used internally by genqlient
 type __updateIdentityInput struct {
@@ -421,6 +437,66 @@ type addValueResponse struct {
 // GetAddValue returns addValueResponse.AddValue, and is useful for accessing the field via an interface.
 func (v *addValueResponse) GetAddValue() *addValueAddValueAddValuePayload { return v.AddValue }
 
+// allIdentitiesQueryIdentityIdentityQueryResult includes the requested fields of the GraphQL type IdentityQueryResult.
+// The GraphQL type's documentation follows.
+//
+// Identity result
+type allIdentitiesQueryIdentityIdentityQueryResult struct {
+	Data []*allIdentitiesQueryIdentityIdentityQueryResultDataIdentity `json:"data"`
+}
+
+// GetData returns allIdentitiesQueryIdentityIdentityQueryResult.Data, and is useful for accessing the field via an interface.
+func (v *allIdentitiesQueryIdentityIdentityQueryResult) GetData() []*allIdentitiesQueryIdentityIdentityQueryResultDataIdentity {
+	return v.Data
+}
+
+// allIdentitiesQueryIdentityIdentityQueryResultDataIdentity includes the requested fields of the GraphQL type Identity.
+type allIdentitiesQueryIdentityIdentityQueryResultDataIdentity struct {
+	Name   *string                                                                 `json:"name"`
+	Rights []*allIdentitiesQueryIdentityIdentityQueryResultDataIdentityRightsRight `json:"rights"`
+}
+
+// GetName returns allIdentitiesQueryIdentityIdentityQueryResultDataIdentity.Name, and is useful for accessing the field via an interface.
+func (v *allIdentitiesQueryIdentityIdentityQueryResultDataIdentity) GetName() *string { return v.Name }
+
+// GetRights returns allIdentitiesQueryIdentityIdentityQueryResultDataIdentity.Rights, and is useful for accessing the field via an interface.
+func (v *allIdentitiesQueryIdentityIdentityQueryResultDataIdentity) GetRights() []*allIdentitiesQueryIdentityIdentityQueryResultDataIdentityRightsRight {
+	return v.Rights
+}
+
+// allIdentitiesQueryIdentityIdentityQueryResultDataIdentityRightsRight includes the requested fields of the GraphQL type Right.
+type allIdentitiesQueryIdentityIdentityQueryResultDataIdentityRightsRight struct {
+	Target            RightTarget `json:"target"`
+	Right             Directions  `json:"right"`
+	RightValuePattern string      `json:"rightValuePattern"`
+}
+
+// GetTarget returns allIdentitiesQueryIdentityIdentityQueryResultDataIdentityRightsRight.Target, and is useful for accessing the field via an interface.
+func (v *allIdentitiesQueryIdentityIdentityQueryResultDataIdentityRightsRight) GetTarget() RightTarget {
+	return v.Target
+}
+
+// GetRight returns allIdentitiesQueryIdentityIdentityQueryResultDataIdentityRightsRight.Right, and is useful for accessing the field via an interface.
+func (v *allIdentitiesQueryIdentityIdentityQueryResultDataIdentityRightsRight) GetRight() Directions {
+	return v.Right
+}
+
+// GetRightValuePattern returns allIdentitiesQueryIdentityIdentityQueryResultDataIdentityRightsRight.RightValuePattern, and is useful for accessing the field via an interface.
+func (v *allIdentitiesQueryIdentityIdentityQueryResultDataIdentityRightsRight) GetRightValuePattern() string {
+	return v.RightValuePattern
+}
+
+// allIdentitiesResponse is returned by allIdentities on success.
+type allIdentitiesResponse struct {
+	// return a list of  Identity filterable, pageination, orderbale, groupable ...
+	QueryIdentity *allIdentitiesQueryIdentityIdentityQueryResult `json:"queryIdentity"`
+}
+
+// GetQueryIdentity returns allIdentitiesResponse.QueryIdentity, and is useful for accessing the field via an interface.
+func (v *allIdentitiesResponse) GetQueryIdentity() *allIdentitiesQueryIdentityIdentityQueryResult {
+	return v.QueryIdentity
+}
+
 // allRelatedValuesAllRelatedValuesValue includes the requested fields of the GraphQL type Value.
 type allRelatedValuesAllRelatedValuesValue struct {
 	Id   string `json:"id"`
@@ -440,6 +516,50 @@ type allRelatedValuesResponse struct {
 
 // GetAllRelatedValues returns allRelatedValuesResponse.AllRelatedValues, and is useful for accessing the field via an interface.
 func (v *allRelatedValuesResponse) GetAllRelatedValues() []*allRelatedValuesAllRelatedValuesValue {
+	return v.AllRelatedValues
+}
+
+// allRelatedValuesWithIdentityValuesAllRelatedValuesValue includes the requested fields of the GraphQL type Value.
+type allRelatedValuesWithIdentityValuesAllRelatedValuesValue struct {
+	Id    string                                                                       `json:"id"`
+	Name  string                                                                       `json:"name"`
+	Value []*allRelatedValuesWithIdentityValuesAllRelatedValuesValueValueIdentityValue `json:"value"`
+}
+
+// GetId returns allRelatedValuesWithIdentityValuesAllRelatedValuesValue.Id, and is useful for accessing the field via an interface.
+func (v *allRelatedValuesWithIdentityValuesAllRelatedValuesValue) GetId() string { return v.Id }
+
+// GetName returns allRelatedValuesWithIdentityValuesAllRelatedValuesValue.Name, and is useful for accessing the field via an interface.
+func (v *allRelatedValuesWithIdentityValuesAllRelatedValuesValue) GetName() string { return v.Name }
+
+// GetValue returns allRelatedValuesWithIdentityValuesAllRelatedValuesValue.Value, and is useful for accessing the field via an interface.
+func (v *allRelatedValuesWithIdentityValuesAllRelatedValuesValue) GetValue() []*allRelatedValuesWithIdentityValuesAllRelatedValuesValueValueIdentityValue {
+	return v.Value
+}
+
+// allRelatedValuesWithIdentityValuesAllRelatedValuesValueValueIdentityValue includes the requested fields of the GraphQL type IdentityValue.
+type allRelatedValuesWithIdentityValuesAllRelatedValuesValueValueIdentityValue struct {
+	Id         string `json:"id"`
+	IdentityID string `json:"identityID"`
+}
+
+// GetId returns allRelatedValuesWithIdentityValuesAllRelatedValuesValueValueIdentityValue.Id, and is useful for accessing the field via an interface.
+func (v *allRelatedValuesWithIdentityValuesAllRelatedValuesValueValueIdentityValue) GetId() string {
+	return v.Id
+}
+
+// GetIdentityID returns allRelatedValuesWithIdentityValuesAllRelatedValuesValueValueIdentityValue.IdentityID, and is useful for accessing the field via an interface.
+func (v *allRelatedValuesWithIdentityValuesAllRelatedValuesValueValueIdentityValue) GetIdentityID() string {
+	return v.IdentityID
+}
+
+// allRelatedValuesWithIdentityValuesResponse is returned by allRelatedValuesWithIdentityValues on success.
+type allRelatedValuesWithIdentityValuesResponse struct {
+	AllRelatedValues []*allRelatedValuesWithIdentityValuesAllRelatedValuesValue `json:"allRelatedValues"`
+}
+
+// GetAllRelatedValues returns allRelatedValuesWithIdentityValuesResponse.AllRelatedValues, and is useful for accessing the field via an interface.
+func (v *allRelatedValuesWithIdentityValuesResponse) GetAllRelatedValues() []*allRelatedValuesWithIdentityValuesAllRelatedValuesValue {
 	return v.AllRelatedValues
 }
 
@@ -883,6 +1003,31 @@ type getVaultResponse struct {
 // GetGetVault returns getVaultResponse.GetVault, and is useful for accessing the field via an interface.
 func (v *getVaultResponse) GetGetVault() *getVaultGetVault { return v.GetVault }
 
+// removeIdentityValueDeleteIdentityValueDeleteIdentityValuePayload includes the requested fields of the GraphQL type DeleteIdentityValuePayload.
+// The GraphQL type's documentation follows.
+//
+// DeleteIdentityValue result with filterable data and count of affected entries
+type removeIdentityValueDeleteIdentityValueDeleteIdentityValuePayload struct {
+	// Count of deleted IdentityValue entities
+	Count int `json:"count"`
+}
+
+// GetCount returns removeIdentityValueDeleteIdentityValueDeleteIdentityValuePayload.Count, and is useful for accessing the field via an interface.
+func (v *removeIdentityValueDeleteIdentityValueDeleteIdentityValuePayload) GetCount() int {
+	return v.Count
+}
+
+// removeIdentityValueResponse is returned by removeIdentityValue on success.
+type removeIdentityValueResponse struct {
+	// delete IdentityValue filtered by selection and delete all matched values
+	DeleteIdentityValue *removeIdentityValueDeleteIdentityValueDeleteIdentityValuePayload `json:"deleteIdentityValue"`
+}
+
+// GetDeleteIdentityValue returns removeIdentityValueResponse.DeleteIdentityValue, and is useful for accessing the field via an interface.
+func (v *removeIdentityValueResponse) GetDeleteIdentityValue() *removeIdentityValueDeleteIdentityValueDeleteIdentityValuePayload {
+	return v.DeleteIdentityValue
+}
+
 // updateIdentityResponse is returned by updateIdentity on success.
 type updateIdentityResponse struct {
 	// update Identity filtered by selection and update all matched values
@@ -1185,6 +1330,44 @@ func addValue(
 	return &data, err
 }
 
+// The query or mutation executed by allIdentities.
+const allIdentities_Operation = `
+query allIdentities {
+	queryIdentity {
+		data {
+			name
+			rights {
+				target
+				right
+				rightValuePattern
+			}
+		}
+	}
+}
+`
+
+func allIdentities(
+	ctx context.Context,
+	client graphql.Client,
+) (*allIdentitiesResponse, error) {
+	req := &graphql.Request{
+		OpName: "allIdentities",
+		Query:  allIdentities_Operation,
+	}
+	var err error
+
+	var data allIdentitiesResponse
+	resp := &graphql.Response{Data: &data}
+
+	err = client.MakeRequest(
+		ctx,
+		req,
+		resp,
+	)
+
+	return &data, err
+}
+
 // The query or mutation executed by allRelatedValues.
 const allRelatedValues_Operation = `
 query allRelatedValues ($identity: String!) {
@@ -1210,6 +1393,46 @@ func allRelatedValues(
 	var err error
 
 	var data allRelatedValuesResponse
+	resp := &graphql.Response{Data: &data}
+
+	err = client.MakeRequest(
+		ctx,
+		req,
+		resp,
+	)
+
+	return &data, err
+}
+
+// The query or mutation executed by allRelatedValuesWithIdentityValues.
+const allRelatedValuesWithIdentityValues_Operation = `
+query allRelatedValuesWithIdentityValues ($identity: String!) {
+	allRelatedValues(identityId: $identity) {
+		id
+		name
+		value {
+			id
+			identityID
+		}
+	}
+}
+`
+
+func allRelatedValuesWithIdentityValues(
+	ctx context.Context,
+	client graphql.Client,
+	identity string,
+) (*allRelatedValuesWithIdentityValuesResponse, error) {
+	req := &graphql.Request{
+		OpName: "allRelatedValuesWithIdentityValues",
+		Query:  allRelatedValuesWithIdentityValues_Operation,
+		Variables: &__allRelatedValuesWithIdentityValuesInput{
+			Identity: identity,
+		},
+	}
+	var err error
+
+	var data allRelatedValuesWithIdentityValuesResponse
 	resp := &graphql.Response{Data: &data}
 
 	err = client.MakeRequest(
@@ -1677,6 +1900,41 @@ func getVault(
 	var err error
 
 	var data getVaultResponse
+	resp := &graphql.Response{Data: &data}
+
+	err = client.MakeRequest(
+		ctx,
+		req,
+		resp,
+	)
+
+	return &data, err
+}
+
+// The query or mutation executed by removeIdentityValue.
+const removeIdentityValue_Operation = `
+mutation removeIdentityValue ($id: ID) {
+	deleteIdentityValue(filter: {id:{eq:$id}}) {
+		count
+	}
+}
+`
+
+func removeIdentityValue(
+	ctx context.Context,
+	client graphql.Client,
+	id *string,
+) (*removeIdentityValueResponse, error) {
+	req := &graphql.Request{
+		OpName: "removeIdentityValue",
+		Query:  removeIdentityValue_Operation,
+		Variables: &__removeIdentityValueInput{
+			Id: id,
+		},
+	}
+	var err error
+
+	var data removeIdentityValueResponse
 	resp := &graphql.Response{Data: &data}
 
 	err = client.MakeRequest(
