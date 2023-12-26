@@ -27,6 +27,18 @@ func NewApi(endpoint string, httpClient *http.Client) Api {
 	}
 }
 
+func (a *Api) NewVaultByPublicKey(name, token string, publicKey *ecdsa.PublicKey) (vaultID string, err error) {
+
+	pubbase64, err := helper.NewBase64PublicPem(publicKey)
+	if err != nil {
+		return
+	}
+
+	resp, err := createNewVault(context.Background(), a.client, name, pubbase64, token)
+	vaultID = resp.CreateVault
+	return
+}
+
 func (a *Api) NewVault(name, token string) (private *ecdsa.PrivateKey, public *ecdsa.PublicKey, vaultID string, err error) {
 	private, public, err = a.GetNewIdentityKeyPair()
 	if err != nil {
