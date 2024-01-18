@@ -249,8 +249,8 @@ func (a *ProtectedApi) AddRights(rights []*RightInput, identityId string) ([]str
 }
 
 func (a *ProtectedApi) AddValue(key, value string, valueType ValueType) (string, error) {
-	if strings.Contains(value, "*") || strings.Contains(value, ">") {
-		return "", errors.New("value can not have wildcard symbols * or >")
+	if strings.Contains(key, "*") || strings.Contains(key, ">") {
+		return "", errors.New("key can not have wildcard symbols * or >")
 	}
 	resp, err := getRelatedIdenties(context.Background(), a.client, key)
 	if err != nil {

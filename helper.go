@@ -17,14 +17,9 @@ var ValuePatternRegex *regexp.Regexp
 
 var ValuesPatternRegex *regexp.Regexp
 
-const (
-	ValuePatternRegexStr  = `^\((?P<directions>(r|w|d)+)\)(?P<target>(VALUES|IDENTITY|SYSTEM))(?P<pattern>(\.([a-z0-9_\-]+|[>\*]{1}))+)$`
-	ValuesPatternRegexStr = `^(VALUES|IDENTITY|SYSTEM)(\.[a-z0-9_\-]+)+$`
-)
-
 func init() {
-	ValuePatternRegex = regexp.MustCompile(ValuePatternRegexStr)
-	ValuesPatternRegex = regexp.MustCompile(ValuesPatternRegexStr)
+	ValuePatternRegex = regexp.MustCompile(helper.ValuePatternRegexStr)
+	ValuesPatternRegex = regexp.MustCompile(helper.ValuesPatternRegexStr)
 }
 
 func GetRightDescriptionByString(valuePattern string) ([]RightDescription, error) {
