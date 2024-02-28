@@ -639,3 +639,11 @@ func (a *ProtectedApi) GetAllRelatedValuesWithIdentityValues(identityId string) 
 	}
 	return resp.AllRelatedValues, nil
 }
+
+func (a *ProtectedApi) GetAllRelatedValuesWithIdentityValuesAndPassframe(identityId string) ([]*allRelatedValuesWithIdentityValuesAndSecretAllRelatedValuesValue, error) {
+	resp, err := allRelatedValuesWithIdentityValuesAndSecret(context.Background(), a.client, identityId)
+	if err != nil {
+		return nil, err
+	}
+	return resp.AllRelatedValues, nil
+}

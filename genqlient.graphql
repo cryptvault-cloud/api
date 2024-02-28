@@ -218,6 +218,19 @@ query allRelatedValuesWithIdentityValues($identity: String!) {
   }
 }
 
+query allRelatedValuesWithIdentityValuesAndSecret($identity: String!) {
+  allRelatedValues(identityId: $identity) {
+    id
+    name
+    value {
+      id
+      identityID
+      passframe
+    }
+  }
+}
+
+
 
 mutation removeIdentityValue($id: ID) {
   deleteIdentityValue(filter: { id: {eq:$id} }) {

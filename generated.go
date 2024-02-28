@@ -137,6 +137,14 @@ type __allRelatedValuesInput struct {
 // GetIdentity returns __allRelatedValuesInput.Identity, and is useful for accessing the field via an interface.
 func (v *__allRelatedValuesInput) GetIdentity() string { return v.Identity }
 
+// __allRelatedValuesWithIdentityValuesAndSecretInput is used internally by genqlient
+type __allRelatedValuesWithIdentityValuesAndSecretInput struct {
+	Identity string `json:"identity"`
+}
+
+// GetIdentity returns __allRelatedValuesWithIdentityValuesAndSecretInput.Identity, and is useful for accessing the field via an interface.
+func (v *__allRelatedValuesWithIdentityValuesAndSecretInput) GetIdentity() string { return v.Identity }
+
 // __allRelatedValuesWithIdentityValuesInput is used internally by genqlient
 type __allRelatedValuesWithIdentityValuesInput struct {
 	Identity string `json:"identity"`
@@ -551,6 +559,60 @@ func (v *allRelatedValuesWithIdentityValuesAllRelatedValuesValueValueIdentityVal
 // GetIdentityID returns allRelatedValuesWithIdentityValuesAllRelatedValuesValueValueIdentityValue.IdentityID, and is useful for accessing the field via an interface.
 func (v *allRelatedValuesWithIdentityValuesAllRelatedValuesValueValueIdentityValue) GetIdentityID() string {
 	return v.IdentityID
+}
+
+// allRelatedValuesWithIdentityValuesAndSecretAllRelatedValuesValue includes the requested fields of the GraphQL type Value.
+type allRelatedValuesWithIdentityValuesAndSecretAllRelatedValuesValue struct {
+	Id    string                                                                                `json:"id"`
+	Name  string                                                                                `json:"name"`
+	Value []*allRelatedValuesWithIdentityValuesAndSecretAllRelatedValuesValueValueIdentityValue `json:"value"`
+}
+
+// GetId returns allRelatedValuesWithIdentityValuesAndSecretAllRelatedValuesValue.Id, and is useful for accessing the field via an interface.
+func (v *allRelatedValuesWithIdentityValuesAndSecretAllRelatedValuesValue) GetId() string {
+	return v.Id
+}
+
+// GetName returns allRelatedValuesWithIdentityValuesAndSecretAllRelatedValuesValue.Name, and is useful for accessing the field via an interface.
+func (v *allRelatedValuesWithIdentityValuesAndSecretAllRelatedValuesValue) GetName() string {
+	return v.Name
+}
+
+// GetValue returns allRelatedValuesWithIdentityValuesAndSecretAllRelatedValuesValue.Value, and is useful for accessing the field via an interface.
+func (v *allRelatedValuesWithIdentityValuesAndSecretAllRelatedValuesValue) GetValue() []*allRelatedValuesWithIdentityValuesAndSecretAllRelatedValuesValueValueIdentityValue {
+	return v.Value
+}
+
+// allRelatedValuesWithIdentityValuesAndSecretAllRelatedValuesValueValueIdentityValue includes the requested fields of the GraphQL type IdentityValue.
+type allRelatedValuesWithIdentityValuesAndSecretAllRelatedValuesValueValueIdentityValue struct {
+	Id         string `json:"id"`
+	IdentityID string `json:"identityID"`
+	Passframe  string `json:"passframe"`
+}
+
+// GetId returns allRelatedValuesWithIdentityValuesAndSecretAllRelatedValuesValueValueIdentityValue.Id, and is useful for accessing the field via an interface.
+func (v *allRelatedValuesWithIdentityValuesAndSecretAllRelatedValuesValueValueIdentityValue) GetId() string {
+	return v.Id
+}
+
+// GetIdentityID returns allRelatedValuesWithIdentityValuesAndSecretAllRelatedValuesValueValueIdentityValue.IdentityID, and is useful for accessing the field via an interface.
+func (v *allRelatedValuesWithIdentityValuesAndSecretAllRelatedValuesValueValueIdentityValue) GetIdentityID() string {
+	return v.IdentityID
+}
+
+// GetPassframe returns allRelatedValuesWithIdentityValuesAndSecretAllRelatedValuesValueValueIdentityValue.Passframe, and is useful for accessing the field via an interface.
+func (v *allRelatedValuesWithIdentityValuesAndSecretAllRelatedValuesValueValueIdentityValue) GetPassframe() string {
+	return v.Passframe
+}
+
+// allRelatedValuesWithIdentityValuesAndSecretResponse is returned by allRelatedValuesWithIdentityValuesAndSecret on success.
+type allRelatedValuesWithIdentityValuesAndSecretResponse struct {
+	AllRelatedValues []*allRelatedValuesWithIdentityValuesAndSecretAllRelatedValuesValue `json:"allRelatedValues"`
+}
+
+// GetAllRelatedValues returns allRelatedValuesWithIdentityValuesAndSecretResponse.AllRelatedValues, and is useful for accessing the field via an interface.
+func (v *allRelatedValuesWithIdentityValuesAndSecretResponse) GetAllRelatedValues() []*allRelatedValuesWithIdentityValuesAndSecretAllRelatedValuesValue {
+	return v.AllRelatedValues
 }
 
 // allRelatedValuesWithIdentityValuesResponse is returned by allRelatedValuesWithIdentityValues on success.
@@ -1433,6 +1495,47 @@ func allRelatedValuesWithIdentityValues(
 	var err error
 
 	var data allRelatedValuesWithIdentityValuesResponse
+	resp := &graphql.Response{Data: &data}
+
+	err = client.MakeRequest(
+		ctx,
+		req,
+		resp,
+	)
+
+	return &data, err
+}
+
+// The query or mutation executed by allRelatedValuesWithIdentityValuesAndSecret.
+const allRelatedValuesWithIdentityValuesAndSecret_Operation = `
+query allRelatedValuesWithIdentityValuesAndSecret ($identity: String!) {
+	allRelatedValues(identityId: $identity) {
+		id
+		name
+		value {
+			id
+			identityID
+			passframe
+		}
+	}
+}
+`
+
+func allRelatedValuesWithIdentityValuesAndSecret(
+	ctx context.Context,
+	client graphql.Client,
+	identity string,
+) (*allRelatedValuesWithIdentityValuesAndSecretResponse, error) {
+	req := &graphql.Request{
+		OpName: "allRelatedValuesWithIdentityValuesAndSecret",
+		Query:  allRelatedValuesWithIdentityValuesAndSecret_Operation,
+		Variables: &__allRelatedValuesWithIdentityValuesAndSecretInput{
+			Identity: identity,
+		},
+	}
+	var err error
+
+	var data allRelatedValuesWithIdentityValuesAndSecretResponse
 	resp := &graphql.Response{Data: &data}
 
 	err = client.MakeRequest(
