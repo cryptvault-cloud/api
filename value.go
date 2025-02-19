@@ -241,16 +241,56 @@ func (a *ProtectedApi) UpdateValue(id, key, value string, valueType ValueType) (
 	return valueId, err
 }
 
-// SyncValues sync all values by check identity and get all related identities wich also has access to this value.
+// SyncValues sync all values by check identity and get all related identities which also has access to this value.
 func (a *ProtectedApi) SyncValues(identityId string) error {
 	values, err := a.GetAllRelatedValues(identityId)
 	if err != nil {
 		return err
 	}
+	identity, err := a.GetIdentity(identityId)
+	if err != nil {
+		return err
+	}
+	ownerPubKey, err := helper.NewBase64PublicPem(&a.authKey.PublicKey)
+	if err != nil {
+		return err
+	}
+
+	ownerId, err := ownerPubKey.GetIdentityId(a.vaultId)
+	if err != nil {
+		return err
+	}
+
 	for _, v := range values {
-		err := a.SyncValue(v.Id)
+		values := make([]EncryptenValue, 0)
+		value, err := a.GetValueById(v.Id)
 		if err != nil {
 			return err
+		}
+		for _, v := range value.GetValue() {
+			values = append(values, v)
+		}
+		decryptedPassframe, err := a.getDecryptedPassframe(ownerId, values)
+		if err != nil {
+			return err
+		}
+		hasValueForIdentityFound := helper.Includes[*getValueGetValueValueIdentityValue](value.Value, func(gvgvv *getValueGetValueValueIdentityValue) bool {
+			return gvgvv.IdentityID == identity.Id
+		})
+		if !hasValueForIdentityFound {
+			encyptedPassframe, err := identity.PublicKey.Encrypt(decryptedPassframe)
+
+			if err != nil {
+				return err
+			}
+			_, err = a.AddIdentityValue(IdentityValueInput{
+				ValueID:    v.Id,
+				IdentityID: identity.Id,
+				Passframe:  encyptedPassframe,
+			})
+			if err != nil {
+				return err
+			}
 		}
 	}
 	return nil
@@ -298,7 +338,7 @@ func (a *ProtectedApi) SyncValue(id string) error {
 		return err
 	}
 	for _, identity := range resp.IdentitiesWithValueAccess {
-		hasValueForIdentityFound := helper.Includes[*getValueGetValueValueIdentityValue](value.Value, func(gvgvv *getValueGetValueValueIdentityValue) bool {
+		hasValueForIdentityFound := helper.Includes(value.Value, func(gvgvv *getValueGetValueValueIdentityValue) bool {
 			return gvgvv.IdentityID == identity.Id
 		})
 		if !hasValueForIdentityFound {
