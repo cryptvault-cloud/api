@@ -452,7 +452,7 @@ func (a *ProtectedApi) checkIdentityHaveRelatedSignatureChain(identity *getRelat
 		return griiwvai.Id == creator.CreatorTokenId
 	})
 	if len(creatorIdentity) != 1 {
-		return fmt.Errorf("Something strange creator identity was not found, or more than one was found. this could not be possible, cause of permission chain")
+		return fmt.Errorf("something strange creator identity was not found, or more than one was found. this could not be possible, cause of permission chain")
 	}
 	creatorPubKey, err := creatorIdentity[0].GetPublicKey().GetPublicKey()
 	if err != nil {
