@@ -18,6 +18,12 @@ const (
 	DirectionsDelete Directions = "delete"
 )
 
+var AllDirections = []Directions{
+	DirectionsWrite,
+	DirectionsRead,
+	DirectionsDelete,
+}
+
 // IdentityValue Input value to add new IdentityValue
 type IdentityValueInput struct {
 	ValueID    string `json:"valueID"`
@@ -78,12 +84,23 @@ const (
 	RightTargetIdentities RightTarget = "identities"
 )
 
+var AllRightTarget = []RightTarget{
+	RightTargetValues,
+	RightTargetSystem,
+	RightTargetIdentities,
+}
+
 type ValueType string
 
 const (
 	ValueTypeString ValueType = "String"
 	ValueTypeJson   ValueType = "JSON"
 )
+
+var AllValueType = []ValueType{
+	ValueTypeString,
+	ValueTypeJson,
+}
 
 // __addIdentityInput is used internally by genqlient
 type __addIdentityInput struct {
@@ -1238,7 +1255,7 @@ func (v *updateVaultUpdateVaultUpdateVaultPayloadAffectedVault) GetUpdatedAt() *
 	return v.UpdatedAt
 }
 
-// The query or mutation executed by addIdentity.
+// The mutation executed by addIdentity.
 const addIdentity_Operation = `
 mutation addIdentity ($name: String!, $publicKey: Base64PublicPem!, $creatorVerification: String!) {
 	addIdentity(input: {name:$name,publicKey:$publicKey,creatorVerification:$creatorVerification,rights:[]}) {
@@ -1250,13 +1267,13 @@ mutation addIdentity ($name: String!, $publicKey: Base64PublicPem!, $creatorVeri
 `
 
 func addIdentity(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	name string,
 	publicKey helper.Base64PublicPem,
 	creatorVerification string,
-) (*addIdentityResponse, error) {
-	req := &graphql.Request{
+) (data_ *addIdentityResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "addIdentity",
 		Query:  addIdentity_Operation,
 		Variables: &__addIdentityInput{
@@ -1265,21 +1282,20 @@ func addIdentity(
 			CreatorVerification: creatorVerification,
 		},
 	}
-	var err error
 
-	var data addIdentityResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &addIdentityResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by addIdentityValue.
+// The mutation executed by addIdentityValue.
 const addIdentityValue_Operation = `
 mutation addIdentityValue ($input: [IdentityValueInput!]!) {
 	addIdentityValue(input: $input) {
@@ -1291,32 +1307,31 @@ mutation addIdentityValue ($input: [IdentityValueInput!]!) {
 `
 
 func addIdentityValue(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	input []*IdentityValueInput,
-) (*addIdentityValueResponse, error) {
-	req := &graphql.Request{
+) (data_ *addIdentityValueResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "addIdentityValue",
 		Query:  addIdentityValue_Operation,
 		Variables: &__addIdentityValueInput{
 			Input: input,
 		},
 	}
-	var err error
 
-	var data addIdentityValueResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &addIdentityValueResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by addRight.
+// The mutation executed by addRight.
 const addRight_Operation = `
 mutation addRight ($input: [RightInput!]!) {
 	addRight(input: $input) {
@@ -1328,32 +1343,31 @@ mutation addRight ($input: [RightInput!]!) {
 `
 
 func addRight(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	input []*RightInput,
-) (*addRightResponse, error) {
-	req := &graphql.Request{
+) (data_ *addRightResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "addRight",
 		Query:  addRight_Operation,
 		Variables: &__addRightInput{
 			Input: input,
 		},
 	}
-	var err error
 
-	var data addRightResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &addRightResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by addValue.
+// The mutation executed by addValue.
 const addValue_Operation = `
 mutation addValue ($name: String!, $valueType: ValueType!) {
 	addValue(input: {name:$name,type:$valueType}) {
@@ -1365,12 +1379,12 @@ mutation addValue ($name: String!, $valueType: ValueType!) {
 `
 
 func addValue(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	name string,
 	valueType ValueType,
-) (*addValueResponse, error) {
-	req := &graphql.Request{
+) (data_ *addValueResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "addValue",
 		Query:  addValue_Operation,
 		Variables: &__addValueInput{
@@ -1378,21 +1392,20 @@ func addValue(
 			ValueType: valueType,
 		},
 	}
-	var err error
 
-	var data addValueResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &addValueResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by allIdentities.
+// The query executed by allIdentities.
 const allIdentities_Operation = `
 query allIdentities {
 	queryIdentity {
@@ -1409,28 +1422,27 @@ query allIdentities {
 `
 
 func allIdentities(
-	ctx context.Context,
-	client graphql.Client,
-) (*allIdentitiesResponse, error) {
-	req := &graphql.Request{
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *allIdentitiesResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "allIdentities",
 		Query:  allIdentities_Operation,
 	}
-	var err error
 
-	var data allIdentitiesResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &allIdentitiesResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by allRelatedValues.
+// The query executed by allRelatedValues.
 const allRelatedValues_Operation = `
 query allRelatedValues ($identity: String!) {
 	allRelatedValues(identityId: $identity) {
@@ -1441,32 +1453,31 @@ query allRelatedValues ($identity: String!) {
 `
 
 func allRelatedValues(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	identity string,
-) (*allRelatedValuesResponse, error) {
-	req := &graphql.Request{
+) (data_ *allRelatedValuesResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "allRelatedValues",
 		Query:  allRelatedValues_Operation,
 		Variables: &__allRelatedValuesInput{
 			Identity: identity,
 		},
 	}
-	var err error
 
-	var data allRelatedValuesResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &allRelatedValuesResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by allRelatedValuesWithIdentityValues.
+// The query executed by allRelatedValuesWithIdentityValues.
 const allRelatedValuesWithIdentityValues_Operation = `
 query allRelatedValuesWithIdentityValues ($identity: String!) {
 	allRelatedValues(identityId: $identity) {
@@ -1481,32 +1492,31 @@ query allRelatedValuesWithIdentityValues ($identity: String!) {
 `
 
 func allRelatedValuesWithIdentityValues(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	identity string,
-) (*allRelatedValuesWithIdentityValuesResponse, error) {
-	req := &graphql.Request{
+) (data_ *allRelatedValuesWithIdentityValuesResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "allRelatedValuesWithIdentityValues",
 		Query:  allRelatedValuesWithIdentityValues_Operation,
 		Variables: &__allRelatedValuesWithIdentityValuesInput{
 			Identity: identity,
 		},
 	}
-	var err error
 
-	var data allRelatedValuesWithIdentityValuesResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &allRelatedValuesWithIdentityValuesResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by allRelatedValuesWithIdentityValuesAndSecret.
+// The query executed by allRelatedValuesWithIdentityValuesAndSecret.
 const allRelatedValuesWithIdentityValuesAndSecret_Operation = `
 query allRelatedValuesWithIdentityValuesAndSecret ($identity: String!) {
 	allRelatedValues(identityId: $identity) {
@@ -1522,32 +1532,31 @@ query allRelatedValuesWithIdentityValuesAndSecret ($identity: String!) {
 `
 
 func allRelatedValuesWithIdentityValuesAndSecret(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	identity string,
-) (*allRelatedValuesWithIdentityValuesAndSecretResponse, error) {
-	req := &graphql.Request{
+) (data_ *allRelatedValuesWithIdentityValuesAndSecretResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "allRelatedValuesWithIdentityValuesAndSecret",
 		Query:  allRelatedValuesWithIdentityValuesAndSecret_Operation,
 		Variables: &__allRelatedValuesWithIdentityValuesAndSecretInput{
 			Identity: identity,
 		},
 	}
-	var err error
 
-	var data allRelatedValuesWithIdentityValuesAndSecretResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &allRelatedValuesWithIdentityValuesAndSecretResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by createNewVault.
+// The mutation executed by createNewVault.
 const createNewVault_Operation = `
 mutation createNewVault ($name: String!, $operatorPublicKey: Base64PublicPem!, $token: String!) {
 	createVault(name: $name, operatorPublicKey: $operatorPublicKey, token: $token)
@@ -1555,13 +1564,13 @@ mutation createNewVault ($name: String!, $operatorPublicKey: Base64PublicPem!, $
 `
 
 func createNewVault(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	name string,
 	operatorPublicKey helper.Base64PublicPem,
 	token string,
-) (*createNewVaultResponse, error) {
-	req := &graphql.Request{
+) (data_ *createNewVaultResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "createNewVault",
 		Query:  createNewVault_Operation,
 		Variables: &__createNewVaultInput{
@@ -1570,21 +1579,20 @@ func createNewVault(
 			Token:             token,
 		},
 	}
-	var err error
 
-	var data createNewVaultResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &createNewVaultResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by deleteAllRightsFromIdentity.
+// The mutation executed by deleteAllRightsFromIdentity.
 const deleteAllRightsFromIdentity_Operation = `
 mutation deleteAllRightsFromIdentity ($identityId: String!) {
 	deleteRight(filter: {identityID:{eq:$identityId}}) {
@@ -1594,32 +1602,31 @@ mutation deleteAllRightsFromIdentity ($identityId: String!) {
 `
 
 func deleteAllRightsFromIdentity(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	identityId string,
-) (*deleteAllRightsFromIdentityResponse, error) {
-	req := &graphql.Request{
+) (data_ *deleteAllRightsFromIdentityResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "deleteAllRightsFromIdentity",
 		Query:  deleteAllRightsFromIdentity_Operation,
 		Variables: &__deleteAllRightsFromIdentityInput{
 			IdentityId: identityId,
 		},
 	}
-	var err error
 
-	var data deleteAllRightsFromIdentityResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &deleteAllRightsFromIdentityResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by deleteIdentity.
+// The mutation executed by deleteIdentity.
 const deleteIdentity_Operation = `
 mutation deleteIdentity ($identityid: String!) {
 	deleteIdentity(filter: {id:{eq:$identityid}}) {
@@ -1629,32 +1636,31 @@ mutation deleteIdentity ($identityid: String!) {
 `
 
 func deleteIdentity(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	identityid string,
-) (*deleteIdentityResponse, error) {
-	req := &graphql.Request{
+) (data_ *deleteIdentityResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "deleteIdentity",
 		Query:  deleteIdentity_Operation,
 		Variables: &__deleteIdentityInput{
 			Identityid: identityid,
 		},
 	}
-	var err error
 
-	var data deleteIdentityResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &deleteIdentityResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by deleteIdentityValue.
+// The mutation executed by deleteIdentityValue.
 const deleteIdentityValue_Operation = `
 mutation deleteIdentityValue ($id: ID!) {
 	deleteIdentityValue(filter: {id:{eq:$id}}) {
@@ -1664,32 +1670,31 @@ mutation deleteIdentityValue ($id: ID!) {
 `
 
 func deleteIdentityValue(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	id string,
-) (*deleteIdentityValueResponse, error) {
-	req := &graphql.Request{
+) (data_ *deleteIdentityValueResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "deleteIdentityValue",
 		Query:  deleteIdentityValue_Operation,
 		Variables: &__deleteIdentityValueInput{
 			Id: id,
 		},
 	}
-	var err error
 
-	var data deleteIdentityValueResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &deleteIdentityValueResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by deleteRight.
+// The mutation executed by deleteRight.
 const deleteRight_Operation = `
 mutation deleteRight ($rightId: ID!, $identityId: String!) {
 	deleteRight(filter: {id:{eq:$rightId},identityID:{eq:$identityId}}) {
@@ -1699,12 +1704,12 @@ mutation deleteRight ($rightId: ID!, $identityId: String!) {
 `
 
 func deleteRight(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	rightId string,
 	identityId string,
-) (*deleteRightResponse, error) {
-	req := &graphql.Request{
+) (data_ *deleteRightResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "deleteRight",
 		Query:  deleteRight_Operation,
 		Variables: &__deleteRightInput{
@@ -1712,21 +1717,20 @@ func deleteRight(
 			IdentityId: identityId,
 		},
 	}
-	var err error
 
-	var data deleteRightResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &deleteRightResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by deleteValue.
+// The mutation executed by deleteValue.
 const deleteValue_Operation = `
 mutation deleteValue ($id: String!) {
 	deleteValue(filter: {id:{eq:$id}}) {
@@ -1736,32 +1740,31 @@ mutation deleteValue ($id: String!) {
 `
 
 func deleteValue(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	id string,
-) (*deleteValueResponse, error) {
-	req := &graphql.Request{
+) (data_ *deleteValueResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "deleteValue",
 		Query:  deleteValue_Operation,
 		Variables: &__deleteValueInput{
 			Id: id,
 		},
 	}
-	var err error
 
-	var data deleteValueResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &deleteValueResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by deleteVault.
+// The mutation executed by deleteVault.
 const deleteVault_Operation = `
 mutation deleteVault ($id: String!) {
 	deleteVault(filter: {id:{eq:$id}}) {
@@ -1771,32 +1774,31 @@ mutation deleteVault ($id: String!) {
 `
 
 func deleteVault(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	id string,
-) (*deleteVaultResponse, error) {
-	req := &graphql.Request{
+) (data_ *deleteVaultResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "deleteVault",
 		Query:  deleteVault_Operation,
 		Variables: &__deleteVaultInput{
 			Id: id,
 		},
 	}
-	var err error
 
-	var data deleteVaultResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &deleteVaultResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by getIdentity.
+// The query executed by getIdentity.
 const getIdentity_Operation = `
 query getIdentity ($id: String!) {
 	getIdentity(id: $id) {
@@ -1817,32 +1819,31 @@ query getIdentity ($id: String!) {
 `
 
 func getIdentity(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	id string,
-) (*getIdentityResponse, error) {
-	req := &graphql.Request{
+) (data_ *getIdentityResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "getIdentity",
 		Query:  getIdentity_Operation,
 		Variables: &__getIdentityInput{
 			Id: id,
 		},
 	}
-	var err error
 
-	var data getIdentityResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &getIdentityResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by getRelatedIdenties.
+// The query executed by getRelatedIdenties.
 const getRelatedIdenties_Operation = `
 query getRelatedIdenties ($value: String!) {
 	identitiesWithValueAccess(forValue: $value) {
@@ -1856,32 +1857,31 @@ query getRelatedIdenties ($value: String!) {
 `
 
 func getRelatedIdenties(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	value string,
-) (*getRelatedIdentiesResponse, error) {
-	req := &graphql.Request{
+) (data_ *getRelatedIdentiesResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "getRelatedIdenties",
 		Query:  getRelatedIdenties_Operation,
 		Variables: &__getRelatedIdentiesInput{
 			Value: value,
 		},
 	}
-	var err error
 
-	var data getRelatedIdentiesResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &getRelatedIdentiesResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by getValue.
+// The query executed by getValue.
 const getValue_Operation = `
 query getValue ($id: String!) {
 	getValue(id: $id) {
@@ -1903,32 +1903,31 @@ query getValue ($id: String!) {
 `
 
 func getValue(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	id string,
-) (*getValueResponse, error) {
-	req := &graphql.Request{
+) (data_ *getValueResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "getValue",
 		Query:  getValue_Operation,
 		Variables: &__getValueInput{
 			Id: id,
 		},
 	}
-	var err error
 
-	var data getValueResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &getValueResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by getValueByName.
+// The query executed by getValueByName.
 const getValueByName_Operation = `
 query getValueByName ($name: String!) {
 	queryValue(filter: {name:{eq:$name}}) {
@@ -1952,32 +1951,31 @@ query getValueByName ($name: String!) {
 `
 
 func getValueByName(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	name string,
-) (*getValueByNameResponse, error) {
-	req := &graphql.Request{
+) (data_ *getValueByNameResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "getValueByName",
 		Query:  getValueByName_Operation,
 		Variables: &__getValueByNameInput{
 			Name: name,
 		},
 	}
-	var err error
 
-	var data getValueByNameResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &getValueByNameResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by getVault.
+// The query executed by getVault.
 const getVault_Operation = `
 query getVault ($id: String!) {
 	getVault(id: $id) {
@@ -1989,32 +1987,31 @@ query getVault ($id: String!) {
 `
 
 func getVault(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	id string,
-) (*getVaultResponse, error) {
-	req := &graphql.Request{
+) (data_ *getVaultResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "getVault",
 		Query:  getVault_Operation,
 		Variables: &__getVaultInput{
 			Id: id,
 		},
 	}
-	var err error
 
-	var data getVaultResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &getVaultResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by removeIdentityValue.
+// The mutation executed by removeIdentityValue.
 const removeIdentityValue_Operation = `
 mutation removeIdentityValue ($id: ID) {
 	deleteIdentityValue(filter: {id:{eq:$id}}) {
@@ -2024,32 +2021,31 @@ mutation removeIdentityValue ($id: ID) {
 `
 
 func removeIdentityValue(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	id *string,
-) (*removeIdentityValueResponse, error) {
-	req := &graphql.Request{
+) (data_ *removeIdentityValueResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "removeIdentityValue",
 		Query:  removeIdentityValue_Operation,
 		Variables: &__removeIdentityValueInput{
 			Id: id,
 		},
 	}
-	var err error
 
-	var data removeIdentityValueResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &removeIdentityValueResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by updateIdentity.
+// The mutation executed by updateIdentity.
 const updateIdentity_Operation = `
 mutation updateIdentity ($id: String!, $name: String!) {
 	updateIdentity(input: {set:{name:$name},filter:{id:{eq:$id}}}) {
@@ -2062,12 +2058,12 @@ mutation updateIdentity ($id: String!, $name: String!) {
 `
 
 func updateIdentity(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	id string,
 	name string,
-) (*updateIdentityResponse, error) {
-	req := &graphql.Request{
+) (data_ *updateIdentityResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "updateIdentity",
 		Query:  updateIdentity_Operation,
 		Variables: &__updateIdentityInput{
@@ -2075,21 +2071,20 @@ func updateIdentity(
 			Name: name,
 		},
 	}
-	var err error
 
-	var data updateIdentityResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &updateIdentityResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by updateIdentityValue.
+// The mutation executed by updateIdentityValue.
 const updateIdentityValue_Operation = `
 mutation updateIdentityValue ($id: ID!, $input: IdentityValuePatch!) {
 	updateIdentityValue(input: {filter:{id:{eq:$id}},set:$input}) {
@@ -2101,12 +2096,12 @@ mutation updateIdentityValue ($id: ID!, $input: IdentityValuePatch!) {
 `
 
 func updateIdentityValue(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	id string,
 	input *IdentityValuePatch,
-) (*updateIdentityValueResponse, error) {
-	req := &graphql.Request{
+) (data_ *updateIdentityValueResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "updateIdentityValue",
 		Query:  updateIdentityValue_Operation,
 		Variables: &__updateIdentityValueInput{
@@ -2114,21 +2109,20 @@ func updateIdentityValue(
 			Input: input,
 		},
 	}
-	var err error
 
-	var data updateIdentityValueResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &updateIdentityValueResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by updateValue.
+// The mutation executed by updateValue.
 const updateValue_Operation = `
 mutation updateValue ($id: String!, $key: String!, $valueType: ValueType!) {
 	updateValue(input: {filter:{id:{eq:$id}},set:{type:$valueType,name:$key}}) {
@@ -2140,13 +2134,13 @@ mutation updateValue ($id: String!, $key: String!, $valueType: ValueType!) {
 `
 
 func updateValue(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	id string,
 	key string,
 	valueType ValueType,
-) (*updateValueResponse, error) {
-	req := &graphql.Request{
+) (data_ *updateValueResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "updateValue",
 		Query:  updateValue_Operation,
 		Variables: &__updateValueInput{
@@ -2155,21 +2149,20 @@ func updateValue(
 			ValueType: valueType,
 		},
 	}
-	var err error
 
-	var data updateValueResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &updateValueResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
 
-// The query or mutation executed by updateVault.
+// The mutation executed by updateVault.
 const updateVault_Operation = `
 mutation updateVault ($name: String!) {
 	updateVault(input: {filter:{},set:{name:$name}}) {
@@ -2183,27 +2176,26 @@ mutation updateVault ($name: String!) {
 `
 
 func updateVault(
-	ctx context.Context,
-	client graphql.Client,
+	ctx_ context.Context,
+	client_ graphql.Client,
 	name string,
-) (*updateVaultResponse, error) {
-	req := &graphql.Request{
+) (data_ *updateVaultResponse, err_ error) {
+	req_ := &graphql.Request{
 		OpName: "updateVault",
 		Query:  updateVault_Operation,
 		Variables: &__updateVaultInput{
 			Name: name,
 		},
 	}
-	var err error
 
-	var data updateVaultResponse
-	resp := &graphql.Response{Data: &data}
+	data_ = &updateVaultResponse{}
+	resp_ := &graphql.Response{Data: data_}
 
-	err = client.MakeRequest(
-		ctx,
-		req,
-		resp,
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
 	)
 
-	return &data, err
+	return data_, err_
 }
