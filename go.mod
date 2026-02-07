@@ -4,7 +4,7 @@ go 1.25.1
 
 require github.com/Khan/genqlient v0.8.1
 
-require github.com/cryptvault-cloud/helper v0.2.0
+require github.com/cryptvault-cloud/helper v0.2.1
 
 require (
 	github.com/google/uuid v1.6.0 // indirect
