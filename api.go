@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/Khan/genqlient/graphql"
-	"github.com/cryptvault-cloud/helper"
+	"github.com/cryptvault-cloud/api/utils"
 )
 
 var _ ApiHandler = (*Api)(nil)
@@ -45,5 +45,5 @@ func (a *Api) GetProtectedApi(authKey *ecdsa.PrivateKey, vaultId string) Protect
 }
 
 func (a *Api) GetNewIdentityKeyPair() (*ecdsa.PrivateKey, *ecdsa.PublicKey, error) {
-	return helper.GenerateNewKeyPair()
+	return utils.GenerateNewKeyPair()
 }

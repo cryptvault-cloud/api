@@ -5,7 +5,7 @@ import (
 	"crypto/ecdsa"
 	"errors"
 
-	"github.com/cryptvault-cloud/helper"
+	"github.com/cryptvault-cloud/api/utils"
 )
 
 var _ IdentityHandler = (*ProtectedApi)(nil)
@@ -32,7 +32,7 @@ type CreateIdentityResponse struct {
 
 func (a *ProtectedApi) AddIdentity(name string, publicKey *ecdsa.PublicKey, rights []*RightInput) (*AddIdentityResponse, error) {
 
-	key, err := helper.NewBase64PublicPem(publicKey)
+	key, err := utils.NewBase64PublicPem(publicKey)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func (a *ProtectedApi) AddIdentity(name string, publicKey *ecdsa.PublicKey, righ
 		return nil, err
 	}
 
-	creatorSign, err := helper.SignCreatorJWT(a.authKey, newIdentityId, a.vaultId)
+	creatorSign, err := utils.SignCreatorJWT(a.authKey, newIdentityId, a.vaultId)
 	if err != nil {
 		return nil, err
 	}

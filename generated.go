@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
-	"github.com/cryptvault-cloud/helper"
+	"github.com/cryptvault-cloud/api/utils"
 )
 
 type Directions string
@@ -104,16 +104,16 @@ var AllValueType = []ValueType{
 
 // __addIdentityInput is used internally by genqlient
 type __addIdentityInput struct {
-	Name                string                 `json:"name"`
-	PublicKey           helper.Base64PublicPem `json:"publicKey"`
-	CreatorVerification string                 `json:"creatorVerification"`
+	Name                string                `json:"name"`
+	PublicKey           utils.Base64PublicPem `json:"publicKey"`
+	CreatorVerification string                `json:"creatorVerification"`
 }
 
 // GetName returns __addIdentityInput.Name, and is useful for accessing the field via an interface.
 func (v *__addIdentityInput) GetName() string { return v.Name }
 
 // GetPublicKey returns __addIdentityInput.PublicKey, and is useful for accessing the field via an interface.
-func (v *__addIdentityInput) GetPublicKey() helper.Base64PublicPem { return v.PublicKey }
+func (v *__addIdentityInput) GetPublicKey() utils.Base64PublicPem { return v.PublicKey }
 
 // GetCreatorVerification returns __addIdentityInput.CreatorVerification, and is useful for accessing the field via an interface.
 func (v *__addIdentityInput) GetCreatorVerification() string { return v.CreatorVerification }
@@ -172,16 +172,16 @@ func (v *__allRelatedValuesWithIdentityValuesInput) GetIdentity() string { retur
 
 // __createNewVaultInput is used internally by genqlient
 type __createNewVaultInput struct {
-	Name              string                 `json:"name"`
-	OperatorPublicKey helper.Base64PublicPem `json:"operatorPublicKey"`
-	Token             string                 `json:"token"`
+	Name              string                `json:"name"`
+	OperatorPublicKey utils.Base64PublicPem `json:"operatorPublicKey"`
+	Token             string                `json:"token"`
 }
 
 // GetName returns __createNewVaultInput.Name, and is useful for accessing the field via an interface.
 func (v *__createNewVaultInput) GetName() string { return v.Name }
 
 // GetOperatorPublicKey returns __createNewVaultInput.OperatorPublicKey, and is useful for accessing the field via an interface.
-func (v *__createNewVaultInput) GetOperatorPublicKey() helper.Base64PublicPem {
+func (v *__createNewVaultInput) GetOperatorPublicKey() utils.Base64PublicPem {
 	return v.OperatorPublicKey
 }
 
@@ -795,7 +795,7 @@ func (v *deleteVaultResponse) GetDeleteVault() *deleteVaultDeleteVaultDeleteVaul
 type getIdentityGetIdentity struct {
 	Id        string                               `json:"id"`
 	Name      *string                              `json:"name"`
-	PublicKey helper.Base64PublicPem               `json:"publicKey"`
+	PublicKey utils.Base64PublicPem                `json:"publicKey"`
 	VaultID   string                               `json:"vaultID"`
 	CreatedAt *time.Time                           `json:"createdAt"`
 	UpdatedAt *time.Time                           `json:"updatedAt"`
@@ -809,7 +809,7 @@ func (v *getIdentityGetIdentity) GetId() string { return v.Id }
 func (v *getIdentityGetIdentity) GetName() *string { return v.Name }
 
 // GetPublicKey returns getIdentityGetIdentity.PublicKey, and is useful for accessing the field via an interface.
-func (v *getIdentityGetIdentity) GetPublicKey() helper.Base64PublicPem { return v.PublicKey }
+func (v *getIdentityGetIdentity) GetPublicKey() utils.Base64PublicPem { return v.PublicKey }
 
 // GetVaultID returns getIdentityGetIdentity.VaultID, and is useful for accessing the field via an interface.
 func (v *getIdentityGetIdentity) GetVaultID() string { return v.VaultID }
@@ -854,11 +854,11 @@ func (v *getIdentityResponse) GetGetIdentity() *getIdentityGetIdentity { return 
 
 // getRelatedIdentiesIdentitiesWithValueAccessIdentity includes the requested fields of the GraphQL type Identity.
 type getRelatedIdentiesIdentitiesWithValueAccessIdentity struct {
-	Id                  string                 `json:"id"`
-	Name                *string                `json:"name"`
-	PublicKey           helper.Base64PublicPem `json:"publicKey"`
-	CreatorVerification string                 `json:"creatorVerification"`
-	IsOperator          bool                   `json:"isOperator"`
+	Id                  string                `json:"id"`
+	Name                *string               `json:"name"`
+	PublicKey           utils.Base64PublicPem `json:"publicKey"`
+	CreatorVerification string                `json:"creatorVerification"`
+	IsOperator          bool                  `json:"isOperator"`
 }
 
 // GetId returns getRelatedIdentiesIdentitiesWithValueAccessIdentity.Id, and is useful for accessing the field via an interface.
@@ -868,7 +868,7 @@ func (v *getRelatedIdentiesIdentitiesWithValueAccessIdentity) GetId() string { r
 func (v *getRelatedIdentiesIdentitiesWithValueAccessIdentity) GetName() *string { return v.Name }
 
 // GetPublicKey returns getRelatedIdentiesIdentitiesWithValueAccessIdentity.PublicKey, and is useful for accessing the field via an interface.
-func (v *getRelatedIdentiesIdentitiesWithValueAccessIdentity) GetPublicKey() helper.Base64PublicPem {
+func (v *getRelatedIdentiesIdentitiesWithValueAccessIdentity) GetPublicKey() utils.Base64PublicPem {
 	return v.PublicKey
 }
 
@@ -969,11 +969,11 @@ func (v *getValueByNameQueryValueValueQueryResultDataValueValueIdentityValue) Ge
 
 // getValueByNameQueryValueValueQueryResultDataValueValueIdentityValueIdentity includes the requested fields of the GraphQL type Identity.
 type getValueByNameQueryValueValueQueryResultDataValueValueIdentityValueIdentity struct {
-	PublicKey helper.Base64PublicPem `json:"publicKey"`
+	PublicKey utils.Base64PublicPem `json:"publicKey"`
 }
 
 // GetPublicKey returns getValueByNameQueryValueValueQueryResultDataValueValueIdentityValueIdentity.PublicKey, and is useful for accessing the field via an interface.
-func (v *getValueByNameQueryValueValueQueryResultDataValueValueIdentityValueIdentity) GetPublicKey() helper.Base64PublicPem {
+func (v *getValueByNameQueryValueValueQueryResultDataValueValueIdentityValueIdentity) GetPublicKey() utils.Base64PublicPem {
 	return v.PublicKey
 }
 
@@ -1040,11 +1040,11 @@ func (v *getValueGetValueValueIdentityValue) GetPassframe() string { return v.Pa
 
 // getValueGetValueValueIdentityValueIdentity includes the requested fields of the GraphQL type Identity.
 type getValueGetValueValueIdentityValueIdentity struct {
-	PublicKey helper.Base64PublicPem `json:"publicKey"`
+	PublicKey utils.Base64PublicPem `json:"publicKey"`
 }
 
 // GetPublicKey returns getValueGetValueValueIdentityValueIdentity.PublicKey, and is useful for accessing the field via an interface.
-func (v *getValueGetValueValueIdentityValueIdentity) GetPublicKey() helper.Base64PublicPem {
+func (v *getValueGetValueValueIdentityValueIdentity) GetPublicKey() utils.Base64PublicPem {
 	return v.PublicKey
 }
 
@@ -1133,8 +1133,8 @@ func (v *updateIdentityUpdateIdentityUpdateIdentityPayload) GetAffected() []*upd
 
 // updateIdentityUpdateIdentityUpdateIdentityPayloadAffectedIdentity includes the requested fields of the GraphQL type Identity.
 type updateIdentityUpdateIdentityUpdateIdentityPayloadAffectedIdentity struct {
-	Id        string                 `json:"id"`
-	PublicKey helper.Base64PublicPem `json:"publicKey"`
+	Id        string                `json:"id"`
+	PublicKey utils.Base64PublicPem `json:"publicKey"`
 }
 
 // GetId returns updateIdentityUpdateIdentityUpdateIdentityPayloadAffectedIdentity.Id, and is useful for accessing the field via an interface.
@@ -1143,7 +1143,7 @@ func (v *updateIdentityUpdateIdentityUpdateIdentityPayloadAffectedIdentity) GetI
 }
 
 // GetPublicKey returns updateIdentityUpdateIdentityUpdateIdentityPayloadAffectedIdentity.PublicKey, and is useful for accessing the field via an interface.
-func (v *updateIdentityUpdateIdentityUpdateIdentityPayloadAffectedIdentity) GetPublicKey() helper.Base64PublicPem {
+func (v *updateIdentityUpdateIdentityUpdateIdentityPayloadAffectedIdentity) GetPublicKey() utils.Base64PublicPem {
 	return v.PublicKey
 }
 
@@ -1270,7 +1270,7 @@ func addIdentity(
 	ctx_ context.Context,
 	client_ graphql.Client,
 	name string,
-	publicKey helper.Base64PublicPem,
+	publicKey utils.Base64PublicPem,
 	creatorVerification string,
 ) (data_ *addIdentityResponse, err_ error) {
 	req_ := &graphql.Request{
@@ -1567,7 +1567,7 @@ func createNewVault(
 	ctx_ context.Context,
 	client_ graphql.Client,
 	name string,
-	operatorPublicKey helper.Base64PublicPem,
+	operatorPublicKey utils.Base64PublicPem,
 	token string,
 ) (data_ *createNewVaultResponse, err_ error) {
 	req_ := &graphql.Request{

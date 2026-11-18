@@ -4,7 +4,7 @@ import (
 	"context"
 	"crypto/ecdsa"
 
-	"github.com/cryptvault-cloud/helper"
+	"github.com/cryptvault-cloud/api/utils"
 )
 
 var _ VaultHandler = (*Api)(nil)
@@ -16,7 +16,7 @@ type VaultHandler interface {
 
 func (a *Api) NewVaultByPublicKey(name, token string, publicKey *ecdsa.PublicKey) (vaultID string, err error) {
 
-	pubbase64, err := helper.NewBase64PublicPem(publicKey)
+	pubbase64, err := utils.NewBase64PublicPem(publicKey)
 	if err != nil {
 		return
 	}
@@ -31,7 +31,7 @@ func (a *Api) NewVault(name, token string) (private *ecdsa.PrivateKey, public *e
 	if err != nil {
 		return
 	}
-	pubbase64, err := helper.NewBase64PublicPem(public)
+	pubbase64, err := utils.NewBase64PublicPem(public)
 	if err != nil {
 		return
 	}

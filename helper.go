@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/cryptvault-cloud/helper"
+	"github.com/cryptvault-cloud/api/utils"
 )
 
 type RightDescription struct {
@@ -18,13 +18,13 @@ var ValuePatternRegex *regexp.Regexp
 var ValuesPatternRegex *regexp.Regexp
 
 func init() {
-	ValuePatternRegex = regexp.MustCompile(helper.ValuePatternRegexStr)
-	ValuesPatternRegex = regexp.MustCompile(helper.ValuesPatternRegexStr)
+	ValuePatternRegex = regexp.MustCompile(utils.ValuePatternRegexStr)
+	ValuesPatternRegex = regexp.MustCompile(utils.ValuesPatternRegexStr)
 }
 
 func GetRightDescriptionByString(valuePattern string) ([]RightDescription, error) {
 	if !ValuePatternRegex.MatchString(valuePattern) {
-		return nil, fmt.Errorf("valuePattern does not match %s", helper.ValuePatternRegexStr)
+		return nil, fmt.Errorf("valuePattern does not match %s", utils.ValuePatternRegexStr)
 	}
 	var direction, target, pattern []byte
 

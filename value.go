@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cryptvault-cloud/helper"
+	"github.com/cryptvault-cloud/api/utils"
 )
 
 var _ ValueHandler = (*ProtectedApi)(nil)
@@ -47,7 +47,7 @@ func (a *ProtectedApi) AddValue(key, value string, valueType ValueType) (string,
 		return "", err
 	}
 
-	pemPubkey, err := helper.NewBase64PublicPem(&a.authKey.PublicKey)
+	pemPubkey, err := utils.NewBase64PublicPem(&a.authKey.PublicKey)
 	if err != nil {
 		return "", err
 	}
@@ -187,7 +187,7 @@ func (a *ProtectedApi) UpdateValue(id, key, value string, valueType ValueType) (
 		return "", err
 	}
 
-	pemPubkey, err := helper.NewBase64PublicPem(&a.authKey.PublicKey)
+	pemPubkey, err := utils.NewBase64PublicPem(&a.authKey.PublicKey)
 	if err != nil {
 		return "", err
 	}
@@ -251,7 +251,7 @@ func (a *ProtectedApi) SyncValues(identityId string) error {
 	if err != nil {
 		return err
 	}
-	ownerPubKey, err := helper.NewBase64PublicPem(&a.authKey.PublicKey)
+	ownerPubKey, err := utils.NewBase64PublicPem(&a.authKey.PublicKey)
 	if err != nil {
 		return err
 	}
@@ -274,7 +274,7 @@ func (a *ProtectedApi) SyncValues(identityId string) error {
 		if err != nil {
 			return err
 		}
-		hasValueForIdentityFound := helper.Includes[*getValueGetValueValueIdentityValue](value.Value, func(gvgvv *getValueGetValueValueIdentityValue) bool {
+		hasValueForIdentityFound := utils.Includes[*getValueGetValueValueIdentityValue](value.Value, func(gvgvv *getValueGetValueValueIdentityValue) bool {
 			return gvgvv.IdentityID == identity.Id
 		})
 		if !hasValueForIdentityFound {
@@ -305,7 +305,7 @@ func (a *ProtectedApi) SyncValue(id string) error {
 	if err != nil {
 		return err
 	}
-	ownerPubKey, err := helper.NewBase64PublicPem(&a.authKey.PublicKey)
+	ownerPubKey, err := utils.NewBase64PublicPem(&a.authKey.PublicKey)
 	if err != nil {
 		return err
 	}
@@ -338,7 +338,7 @@ func (a *ProtectedApi) SyncValue(id string) error {
 		return err
 	}
 	for _, identity := range resp.IdentitiesWithValueAccess {
-		hasValueForIdentityFound := helper.Includes(value.Value, func(gvgvv *getValueGetValueValueIdentityValue) bool {
+		hasValueForIdentityFound := utils.Includes(value.Value, func(gvgvv *getValueGetValueValueIdentityValue) bool {
 			return gvgvv.IdentityID == identity.Id
 		})
 		if !hasValueForIdentityFound {
@@ -359,7 +359,7 @@ func (a *ProtectedApi) SyncValue(id string) error {
 	}
 
 	for _, v := range value.Value {
-		res := helper.Filter[*getRelatedIdentiesIdentitiesWithValueAccessIdentity](resp.IdentitiesWithValueAccess, func(griiwvai *getRelatedIdentiesIdentitiesWithValueAccessIdentity) bool {
+		res := utils.Filter[*getRelatedIdentiesIdentitiesWithValueAccessIdentity](resp.IdentitiesWithValueAccess, func(griiwvai *getRelatedIdentiesIdentitiesWithValueAccessIdentity) bool {
 			return v.IdentityID == griiwvai.Id
 		})
 		if len(res) == 0 {
@@ -392,7 +392,7 @@ type EncryptenValue interface {
 
 func (a *ProtectedApi) GetDecryptedPassframe(value []EncryptenValue) (string, error) {
 
-	pemKey, err := helper.NewBase64PublicPem(&a.authKey.PublicKey)
+	pemKey, err := utils.NewBase64PublicPem(&a.authKey.PublicKey)
 	if err != nil {
 		return "", err
 	}
@@ -406,7 +406,7 @@ func (a *ProtectedApi) GetDecryptedPassframe(value []EncryptenValue) (string, er
 func (a *ProtectedApi) getDecryptedPassframe(identityId string, value []EncryptenValue) (string, error) {
 	for _, v := range value {
 		if v.GetIdentityID() == identityId {
-			key, err := helper.Decrypt(a.authKey, v.GetPassframe())
+			key, err := utils.Decrypt(a.authKey, v.GetPassframe())
 			return string(key), err
 		}
 	}
@@ -443,12 +443,12 @@ func (a *ProtectedApi) checkIdentityHaveRelatedSignatureChain(identity *getRelat
 		return nil
 	}
 
-	creator, _, err := helper.DecodeCreatorJWT(identity.GetCreatorVerification())
+	creator, _, err := utils.DecodeCreatorJWT(identity.GetCreatorVerification())
 	if err != nil {
 		return err
 	}
 
-	creatorIdentity := helper.Filter(other, func(griiwvai *getRelatedIdentiesIdentitiesWithValueAccessIdentity) bool {
+	creatorIdentity := utils.Filter(other, func(griiwvai *getRelatedIdentiesIdentitiesWithValueAccessIdentity) bool {
 		return griiwvai.Id == creator.CreatorTokenId
 	})
 	if len(creatorIdentity) != 1 {
@@ -458,7 +458,7 @@ func (a *ProtectedApi) checkIdentityHaveRelatedSignatureChain(identity *getRelat
 	if err != nil {
 		return err
 	}
-	_, err = helper.VerifyCreatorJWT(creatorPubKey, identity.CreatorVerification)
+	_, err = utils.VerifyCreatorJWT(creatorPubKey, identity.CreatorVerification)
 	if err != nil {
 		return err
 	}

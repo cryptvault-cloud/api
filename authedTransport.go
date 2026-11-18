@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/cryptvault-cloud/helper"
+	"github.com/cryptvault-cloud/api/utils"
 )
 
 type authedTransport struct {
@@ -15,7 +15,7 @@ type authedTransport struct {
 }
 
 func (t *authedTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	jwt, err := helper.SignJWT(t.key, t.vaultId)
+	jwt, err := utils.SignJWT(t.key, t.vaultId)
 	if err != nil {
 		return nil, err
 	}
