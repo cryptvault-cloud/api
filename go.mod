@@ -4,7 +4,7 @@ go 1.25.1
 
 require (
 	github.com/Khan/genqlient v0.8.1
-	github.com/gkampitakis/go-snaps v0.5.25
+	github.com/gkampitakis/go-snaps v0.5.26
 	github.com/stretchr/testify v1.11.1
 )
 
